@@ -1,0 +1,77 @@
+/* ---- Design tokens: the single place to adjust look & feel later ---- */
+:root {
+  /* color */
+  --bg: #f7f7f8;
+  --surface: #ffffff;
+  --border: #e3e3e8;
+  --text: #1d1d1f;
+  --text-muted: #6b6b73;
+  --accent: #2563eb;
+  --accent-contrast: #ffffff;
+  --up: #16a34a;
+  --down: #dc2626;
+  --danger: #dc2626;
+
+  /* spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-8: 48px;
+
+  /* misc */
+  --radius: 10px;
+  --container: 720px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+  margin: 0 0 var(--space-3);
+}
+
+input,
+button {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* centered page column */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-4) var(--space-8);
+}
