@@ -1,0 +1,44 @@
+.wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+/* the tip, shown above the trigger on hover/tap */
+.tip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface-3);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+  z-index: 5;
+}
+
+/* anchor the tip's right edge to the trigger (for triggers near the right
+   screen edge, e.g. the AvatarStack "+N" chip) so it extends leftward */
+.alignEnd {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+
+/* hover reveal only on devices that actually hover (avoids a stuck tip on
+   touch); tap reveal (.open) works everywhere and auto-hides via JS timer */
+@media (hover: hover) {
+  .wrap:hover .tip {
+    opacity: 1;
+  }
+}
+
+.open {
+  opacity: 1;
+}

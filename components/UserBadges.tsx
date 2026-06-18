@@ -1,12 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Avatar from "@/components/ui/Avatar";
+import HoverTip from "@/components/ui/HoverTip";
 import type { Voter } from "@/lib/types";
 import styles from "./UserBadges.module.css";
-
-/** ms a tapped name stays visible before auto-hiding (touch has no hover). */
-const REVEAL_MS = 600;
 
 /**
  * A single circular avatar (first letter); shows the full name on hover/tap.
@@ -22,38 +19,10 @@ export function UserBadge({
   className?: string;
   avatarClassName?: string;
 }) {
-  const [open, setOpen] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(
-    () => () => {
-      if (timer.current) clearTimeout(timer.current);
-    },
-    [],
-  );
-
-  // tap reveals, then auto-hides — so it never "persists" like a toggle
-  function reveal() {
-    setOpen(true);
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => setOpen(false), REVEAL_MS);
-  }
-
   return (
-    <span className={`${styles.wrap} ${className ?? ""}`.trim()}>
-      <Avatar
-        name={name}
-        className={avatarClassName}
-        onClick={reveal}
-        aria-label={name}
-      />
-      <span
-        className={`${styles.tip} ${open ? styles.open : ""}`}
-        role="tooltip"
-      >
-        {name}
-      </span>
-    </span>
+    <HoverTip label={name} className={className}>
+      <Avatar name={name} className={avatarClassName} aria-label={name} />
+    </HoverTip>
   );
 }
 

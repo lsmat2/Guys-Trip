@@ -1,10 +1,18 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import AvatarStack from "@/components/AvatarStack";
 import type { CurrentUser } from "@/lib/auth";
 import type { Voter, WeekendInfo } from "@/lib/types";
 import styles from "./CalendarView.module.css";
+
+/** The user's machine-local date as "yyyy-mm-dd" (matches iso(y,m,day)). */
+function localTodayKey(): string {
+  const d = new Date();
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+const noopSubscribe = () => () => {};
 
 type Props = {
   weekends: WeekendInfo[];
@@ -45,6 +53,11 @@ export default function CalendarView({
   currentUser,
   onToggle,
 }: Props) {
+  // the user's machine-local "today" for the marker. Server snapshot is null
+  // so SSR/timezone differences can't cause a hydration mismatch; the real date
+  // resolves on the client right after hydration.
+  const todayKey = useSyncExternalStore(noopSubscribe, localTodayKey, () => null);
+
   // valid (in-window) weekend Friday keys
   const keySet = useMemo(() => new Set(weekends.map((w) => w.start)), [weekends]);
 
@@ -86,20 +99,28 @@ export default function CalendarView({
 
         return (
           <div key={`${y}-${m}`} className={styles.month}>
-            <h2 className={styles.title}>
-              {MONTH_NAMES[m]} {y}
-            </h2>
             <div className={styles.grid}>
-              {WEEKDAY_HEADERS.map((h, i) => (
-                <div
-                  key={h}
-                  className={`${styles.head} ${i >= 4 ? styles.headWeekend : ""}`}
-                >
-                  {h}
-                </div>
-              ))}
-              {/* spacer header above the avatar column */}
-              <div className={`${styles.head} ${styles.avatarCell}`} />
+              {/* month name, aligned to the day grid's left edge so it tracks
+                  the centering (spans the 7 day columns) */}
+              <h2 className={styles.title}>
+                {MONTH_NAMES[m]} {y}
+              </h2>
+
+              <div className={styles.week}>
+                {/* leading spacer column — mirrors the avatar column to center
+                    the day grid when there's room */}
+                <div />
+                {WEEKDAY_HEADERS.map((h, i) => (
+                  <div
+                    key={h}
+                    className={`${styles.head} ${i >= 4 ? styles.headWeekend : ""}`}
+                  >
+                    {h}
+                  </div>
+                ))}
+                {/* spacer above the avatar column */}
+                <div className={`${styles.head} ${styles.avatarCell}`} />
+              </div>
 
               {weeks.map((week, wi) => {
                 // the weekend that "belongs" to this row, by its Friday cell
@@ -111,6 +132,8 @@ export default function CalendarView({
 
                 return (
                   <div key={wi} className={styles.week}>
+                    {/* leading spacer column (centers the grid) */}
+                    <div />
                     {week.map((day, idx) => {
                       if (day === null) {
                         return (
@@ -120,12 +143,15 @@ export default function CalendarView({
 
                       const key = weekendKeyFor(y, m, day);
                       const selectable = key !== null && keySet.has(key);
+                      const isToday = todayKey === iso(y, m, day);
 
                       if (!selectable) {
                         return (
                           <div
                             key={iso(y, m, day)}
-                            className={`${styles.cell} ${styles.day}`}
+                            className={`${styles.cell} ${styles.day} ${
+                              isToday ? styles.today : ""
+                            }`}
                           >
                             {day}
                           </div>
@@ -143,7 +169,7 @@ export default function CalendarView({
                           key={iso(y, m, day)}
                           className={`${styles.cell} ${styles.weekend} ${
                             iAmFree ? styles.free : ""
-                          }`}
+                          } ${isToday ? styles.today : ""}`}
                           onClick={() => onToggle(key, !iAmFree)}
                           title={names ? `Free: ${names}` : "No one yet"}
                           aria-pressed={iAmFree}
@@ -153,7 +179,7 @@ export default function CalendarView({
                       );
                     })}
 
-                    {/* desktop-only: who's free this weekend, aligned to the row */}
+                    {/* who's free this weekend, aligned to the row */}
                     <div className={styles.avatarCell}>
                       <AvatarStack voters={rowVoters} />
                     </div>

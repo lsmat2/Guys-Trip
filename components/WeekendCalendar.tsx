@@ -1,7 +1,7 @@
 "use client";
 
 import Button from "@/components/ui/Button";
-import UserBadges from "@/components/UserBadges";
+import AvatarStack from "@/components/AvatarStack";
 import { weekendMonthGroup } from "@/lib/weekends";
 import type { CurrentUser } from "@/lib/auth";
 import type { Voter, WeekendInfo } from "@/lib/types";
@@ -44,7 +44,7 @@ export default function WeekendCalendar({
                 <span className={styles.label}>{w.label}</span>
                 {voters.length > 0 ? (
                   <span className={styles.names}>
-                    <UserBadges voters={voters} />
+                    <AvatarStack voters={voters} />
                   </span>
                 ) : (
                   <span className={styles.none}>No one yet</span>

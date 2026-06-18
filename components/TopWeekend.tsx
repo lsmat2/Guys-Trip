@@ -16,7 +16,7 @@ export default function TopWeekend({
       <div className={styles.label}>{weekend.label}</div>
       <div className={styles.meta}>
         <span className={styles.count}>{voters.length} available</span>
-        <AvatarStack voters={voters} />
+        <AvatarStack voters={voters} max={8} />
       </div>
     </Card>
   );

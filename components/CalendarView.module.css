@@ -6,18 +6,29 @@
   margin-bottom: var(--space-6);
 }
 
+/* spans the 7 day columns so it sits at the day grid's left edge and moves
+   with the centering */
 .title {
+  grid-column: 2 / 9;
   font-size: 1rem;
   font-weight: 600;
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-2);
 }
 
-/* desktop: fixed compact day squares on the left, an avatar column filling
-   the remaining width on the right. The grid + each week row share the same
-   template so avatar cells line up with their weekend's row. */
+/* Fully fluid, no breakpoints. A left spacer mirrors the avatar column so the
+   day grid stays CENTERED while there's room, with avatars pouring right up to
+   the container edge:
+   - left spacer minmax(0,1fr) + avatars minmax(64px,1fr): equal fr, so when
+     roomy both are equal width → days centered; avatars sit in the right one;
+   - day squares hold their 44px max while there's slack;
+   - as width drops the side columns shrink equally and avatars condense; the
+     avatar side floors at 64px ("1 avatar + counter") while the empty left
+     side keeps collapsing toward 0;
+   - only once that's exhausted do the day squares (minmax 0..44) shrink.
+   How many avatars actually render is decided in JS from the column's width. */
 .grid {
   display: grid;
-  grid-template-columns: repeat(7, 44px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) repeat(7, minmax(0, 44px)) minmax(64px, 1fr);
   gap: var(--space-1);
 }
 
@@ -81,6 +92,12 @@
   border-color: var(--up);
 }
 
+/* the current day (user's local date) — an accent ring inside the cell,
+   readable on plain, weekend, and "free" (green) backgrounds alike */
+.today {
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+
 /* the who's-free avatars beside each weekend row. No overflow clipping here —
    the avatar tooltips pop up above the row and must not be cut off. */
 .avatarCell {
@@ -88,16 +105,4 @@
   align-items: center;
   padding-left: var(--space-3);
   min-width: 0;
-}
-
-/* mobile: drop the avatar column entirely and let the squares span full width,
-   matching the original full-bleed calendar (parity with the count badge). */
-@media (max-width: 640px) {
-  .grid {
-    grid-template-columns: repeat(7, 1fr);
-  }
-
-  .avatarCell {
-    display: none;
-  }
 }
