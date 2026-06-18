@@ -3,7 +3,7 @@ import "./globals.css";
 import Providers from "./providers";
 
 export const metadata: Metadata = {
-  title: "Guys Trip",
+  title: "Goon Trip",
   description: "Plan the trip: vote on places, pick weekends that work.",
 };
 

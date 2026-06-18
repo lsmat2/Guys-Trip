@@ -6,7 +6,7 @@ import Stack from "@/components/ui/Stack";
 export default function Home() {
   return (
     <Container>
-      <h1>Guys Trip</h1>
+      <h1>Goon Trip</h1>
 
       <Stack gap={12} style={{ marginTop: 24 }}>
         <Link href="/listings" style={{ textDecoration: "none" }}>

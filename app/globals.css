@@ -11,6 +11,7 @@
   --bg: #0c0d10;
   --surface: #15171c; /* cards, header, modals */
   --surface-2: #1e2128; /* inputs, hover states */
+  --surface-3: #2e333b; /* raised: primary buttons */
   --border: #20242b;
   --border-strong: #2e333b;
 
@@ -18,10 +19,10 @@
   --text: #eceef1;
   --text-muted: #888f99;
 
-  /* ---- Brand accent (the ONLY non-functional color) — muted, low-key ---- */
-  --accent: #c4a572;
-  --accent-hover: #d4b78a;
-  --accent-contrast: #16130c; /* text on top of accent */
+  /* ---- Interactive accent — neutral/monochrome (no brand color) ---- */
+  --accent: #e8eaed;
+  --accent-hover: #ffffff;
+  --accent-contrast: #0c0d10; /* dark text on light fill */
 
   /* ---- Functional only: votes / availability / destructive ---- */
   --up: #5ad27d;

@@ -19,7 +19,7 @@ export default function SiteHeader() {
     <header className={styles.header}>
       <div className={styles.inner}>
         <Link href="/" className={styles.brand}>
-          Guys Trip
+          Goon Trip
         </Link>
         <nav className={styles.nav}>
           {NAV.map((item) => (

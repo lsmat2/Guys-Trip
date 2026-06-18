@@ -52,14 +52,16 @@ export default function WeekendsPage() {
         <Stack direction="row" gap={4}>
           <Button
             small
-            variant={view === "calendar" ? "primary" : "default"}
+            active={view === "calendar"}
+            style={{ fontWeight: 600 }}
             onClick={() => setView("calendar")}
           >
             Calendar
           </Button>
           <Button
             small
-            variant={view === "list" ? "primary" : "default"}
+            active={view === "list"}
+            style={{ fontWeight: 600 }}
             onClick={() => setView("list")}
           >
             List
