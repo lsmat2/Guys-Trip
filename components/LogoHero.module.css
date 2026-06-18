@@ -31,56 +31,106 @@
   height: auto;
 }
 
-/* hands flank the logo, vertically centered, and never intercept taps */
-.hand {
+/* one slot per hand: spans the stage height and centers the hand vertically via
+   flexbox (so no transform is spent on centering — both axes stay free for
+   the slide and bobble). never intercepts taps. */
+.slot {
   position: absolute;
-  top: 50%;
-  height: clamp(96px, 30vw, 150px);
-  width: auto;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
   pointer-events: none;
 }
 
 .left {
   right: 100%;
   margin-right: var(--space-2);
-  transform: translateY(-50%);
-  animation: hand-in-left 0.28s ease-out both;
 }
 
 .right {
   left: 100%;
   margin-left: var(--space-2);
-  transform: translateY(-50%);
-  animation: hand-in-right 0.28s ease-out both;
 }
 
-/* slide outward from behind the logo while fading in */
-@keyframes hand-in-left {
+.hand {
+  display: block;
+  height: clamp(96px, 30vw, 150px);
+  width: auto;
+}
+
+/* ---- Horizontal slide: lives on .mover ----
+   enter slides outward from behind the logo while fading in; exit is the same
+   keyframe reversed, so the hands retrace their path back into the logo. */
+.enter .mover {
+  animation: slide-left 0.16s ease-out both;
+}
+.right.enter .mover {
+  animation-name: slide-right;
+}
+
+.exit .mover {
+  animation: slide-left 0.16s ease-in both reverse;
+}
+.right.exit .mover {
+  animation-name: slide-right;
+}
+
+/* during the bobble phase the mover just holds its out position */
+.bobble .mover {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+@keyframes slide-left {
   from {
     opacity: 0;
-    transform: translate(40%, -50%);
+    transform: translateX(40%);
   }
   to {
     opacity: 1;
-    transform: translate(0, -50%);
+    transform: translateX(0);
   }
 }
 
-@keyframes hand-in-right {
+@keyframes slide-right {
   from {
     opacity: 0;
-    transform: translate(-40%, -50%);
+    transform: translateX(-40%);
   }
   to {
     opacity: 1;
-    transform: translate(0, -50%);
+    transform: translateX(0);
   }
 }
 
-/* respect users who opt out of motion — show the hands without the slide */
+/* ---- Vertical bobble: lives on the inner <img>, bobble phase only ----
+   one keyframe, played in reverse on the right hand so the two are always
+   in opposition (left up while right down, and vice versa). */
+.bobble .hand {
+  animation: bob 0.6s ease-in-out infinite;
+}
+.right.bobble .hand {
+  animation-direction: reverse;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-26px);
+  }
+  75% {
+    transform: translateY(26px);
+  }
+}
+
+/* respect users who opt out of motion — no slide, no bobble */
 @media (prefers-reduced-motion: reduce) {
-  .left,
-  .right {
-    animation: none;
+  .mover,
+  .hand {
+    animation: none !important;
   }
 }

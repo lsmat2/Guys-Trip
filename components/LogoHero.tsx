@@ -3,49 +3,67 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./LogoHero.module.css";
 
-/** How long the hands stay revealed after a tap, in ms. */
+/** Reveal phases. Hands slide out (enter), bobble in place, then slide back
+ *  into the logo (exit) before unmounting (idle). */
+type Phase = "idle" | "enter" | "bobble" | "exit";
+
+/** Slide-in / slide-out duration, kept in sync with the CSS animations. */
+const SLIDE_MS = 160;
+/** Total time the hands are on screen, enter + bobble + exit inclusive. */
 const REVEAL_MS = 3000;
 
 /**
- * Lander hero: the Goon Trip logo. Tapping it briefly flashes a hand on
- * either side for {@link REVEAL_MS}, then they vanish. Purely decorative —
- * no nav, no data. Intended as a base to build a richer animation onto later.
+ * Lander hero: the Goon Trip logo. On load (and on every tap) a hand flashes
+ * out on either side, bobbles up/down in opposition, then slides back into the
+ * logo. Purely decorative — no nav, no data.
  */
 export default function LogoHero() {
-  const [revealed, setRevealed] = useState(false);
-  // hold the dismiss timer so a re-tap resets the window instead of stacking timers
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [phase, setPhase] = useState<Phase>("idle");
+  // hold the in-flight timers so a re-tap resets the sequence instead of stacking
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  function flashHands() {
-    if (timer.current) clearTimeout(timer.current);
-    setRevealed(true);
-    timer.current = setTimeout(() => setRevealed(false), REVEAL_MS);
+  function clearTimers() {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
   }
 
-  // clear any pending timer if the component unmounts mid-reveal
-  useEffect(() => () => {
-    if (timer.current) clearTimeout(timer.current);
+  function flashHands() {
+    clearTimers();
+    setPhase("enter");
+    timers.current.push(
+      setTimeout(() => setPhase("bobble"), SLIDE_MS),
+      setTimeout(() => setPhase("exit"), REVEAL_MS - SLIDE_MS),
+      setTimeout(() => setPhase("idle"), REVEAL_MS),
+    );
+  }
+
+  // flash once on load; clean up any pending timers if we unmount mid-reveal
+  useEffect(() => {
+    flashHands();
+    return clearTimers;
+    // run once on mount — flashHands is stable for our purposes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div className={styles.hero}>
       <div className={styles.stage}>
-        {/* hands are absolutely positioned, so they never shift the logo or
-            expand the scroll region; mounted only while revealed */}
-        {revealed && (
+        {/* slots are absolutely positioned, so the hands never shift the logo
+            or expand the scroll region; mounted only while revealed.
+            outer .mover slides horizontally, inner <img> bobbles vertically —
+            separate elements so the two transforms don't fight. */}
+        {phase !== "idle" && (
           <>
-            <img
-              src="/left-hand.png"
-              alt=""
-              aria-hidden
-              className={`${styles.hand} ${styles.left}`}
-            />
-            <img
-              src="/right-hand.png"
-              alt=""
-              aria-hidden
-              className={`${styles.hand} ${styles.right}`}
-            />
+            <div className={`${styles.slot} ${styles.left} ${styles[phase]}`} aria-hidden>
+              <div className={styles.mover}>
+                <img src="/left-hand.png" alt="" className={styles.hand} />
+              </div>
+            </div>
+            <div className={`${styles.slot} ${styles.right} ${styles[phase]}`} aria-hidden>
+              <div className={styles.mover}>
+                <img src="/right-hand.png" alt="" className={styles.hand} />
+              </div>
+            </div>
           </>
         )}
 
