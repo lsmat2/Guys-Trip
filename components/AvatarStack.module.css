@@ -3,21 +3,24 @@
   align-items: center;
 }
 
-/* each avatar overlaps the previous one, with a ring punched out of the bg
-   so the circles read as distinct even when stacked */
+/* each badge wrapper overlaps the previous one */
 .item {
   margin-left: -7px;
-  box-shadow: 0 0 0 2px var(--bg);
 }
 
 .item:first-child {
   margin-left: 0;
 }
 
-/* raise the hovered avatar above its neighbors so its letter/tooltip is clear
-   (no movement — keeps parity with touch where there is no hover) */
+/* raise the hovered avatar (and its tooltip) above its neighbors — no movement,
+   so it stays consistent with touch where there is no hover */
 .item:hover {
-  z-index: 2;
+  z-index: 1;
+}
+
+/* ring punched out of the bg so overlapping circles read as distinct */
+.ring {
+  box-shadow: 0 0 0 2px var(--bg);
 }
 
 .more {

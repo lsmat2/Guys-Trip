@@ -8,8 +8,20 @@ import styles from "./UserBadges.module.css";
 /** ms a tapped name stays visible before auto-hiding (touch has no hover). */
 const REVEAL_MS = 600;
 
-/** A single circular avatar (first letter); shows the full name on hover/tap. */
-export function UserBadge({ name }: { name: string }) {
+/**
+ * A single circular avatar (first letter); shows the full name on hover/tap.
+ * `className` styles the wrapper and `avatarClassName` the avatar itself, so
+ * callers (e.g. AvatarStack) can overlap/ring them without forking the tooltip.
+ */
+export function UserBadge({
+  name,
+  className,
+  avatarClassName,
+}: {
+  name: string;
+  className?: string;
+  avatarClassName?: string;
+}) {
   const [open, setOpen] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -28,8 +40,13 @@ export function UserBadge({ name }: { name: string }) {
   }
 
   return (
-    <span className={styles.wrap}>
-      <Avatar name={name} onClick={reveal} aria-label={name} />
+    <span className={`${styles.wrap} ${className ?? ""}`.trim()}>
+      <Avatar
+        name={name}
+        className={avatarClassName}
+        onClick={reveal}
+        aria-label={name}
+      />
       <span
         className={`${styles.tip} ${open ? styles.open : ""}`}
         role="tooltip"

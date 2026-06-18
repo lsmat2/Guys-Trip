@@ -81,21 +81,13 @@
   border-color: var(--up);
 }
 
-.count {
-  font-size: 0.62rem;
-  line-height: 1;
-  margin-top: 3px;
-  opacity: 0.85;
-  font-variant-numeric: tabular-nums;
-}
-
-/* the who's-free avatars beside each weekend row */
+/* the who's-free avatars beside each weekend row. No overflow clipping here —
+   the avatar tooltips pop up above the row and must not be cut off. */
 .avatarCell {
   display: flex;
   align-items: center;
   padding-left: var(--space-3);
   min-width: 0;
-  overflow: hidden;
 }
 
 /* mobile: drop the avatar column entirely and let the squares span full width,
