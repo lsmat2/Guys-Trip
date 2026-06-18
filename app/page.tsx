@@ -7,6 +7,7 @@ import Card from "@/components/ui/Card";
 import Stack from "@/components/ui/Stack";
 import TopListing, { netVotes } from "@/components/TopListing";
 import TopWeekend from "@/components/TopWeekend";
+import LogoHero from "@/components/LogoHero";
 import { jsonFetcher } from "@/lib/api";
 import type { AvailabilityData, ListingWithVotes } from "@/lib/types";
 import styles from "./page.module.css";
@@ -61,6 +62,8 @@ export default function Home() {
 
   return (
     <Container>
+      <LogoHero />
+
       <section className={styles.section}>
         <SectionLink href="/listings">Top listings</SectionLink>
         {listingsLoading ? (

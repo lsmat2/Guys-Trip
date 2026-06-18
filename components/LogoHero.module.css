@@ -1,0 +1,86 @@
+/* Lander hero — the tappable Goon Trip logo and its flanking hands.
+   Self-contained: the only consumer is <LogoHero />. */
+
+.hero {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-6) 0 var(--space-5);
+}
+
+/* sizing context for the absolutely-positioned hands; width hugs the logo so
+   the hands anchor to its true edges */
+.stage {
+  position: relative;
+  display: inline-flex;
+}
+
+/* the logo is a bare button — no border/background, no sticky hover state */
+.trigger {
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  line-height: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.logo {
+  display: block;
+  width: clamp(160px, 48vw, 220px);
+  height: auto;
+}
+
+/* hands flank the logo, vertically centered, and never intercept taps */
+.hand {
+  position: absolute;
+  top: 50%;
+  height: clamp(96px, 30vw, 150px);
+  width: auto;
+  pointer-events: none;
+}
+
+.left {
+  right: 100%;
+  margin-right: var(--space-2);
+  transform: translateY(-50%);
+  animation: hand-in-left 0.28s ease-out both;
+}
+
+.right {
+  left: 100%;
+  margin-left: var(--space-2);
+  transform: translateY(-50%);
+  animation: hand-in-right 0.28s ease-out both;
+}
+
+/* slide outward from behind the logo while fading in */
+@keyframes hand-in-left {
+  from {
+    opacity: 0;
+    transform: translate(40%, -50%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+}
+
+@keyframes hand-in-right {
+  from {
+    opacity: 0;
+    transform: translate(-40%, -50%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+}
+
+/* respect users who opt out of motion — show the hands without the slide */
+@media (prefers-reduced-motion: reduce) {
+  .left,
+  .right {
+    animation: none;
+  }
+}
