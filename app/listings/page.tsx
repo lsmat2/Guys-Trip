@@ -75,9 +75,6 @@ export default function ListingsPage() {
   return (
     <Container>
       <h1>Listings</h1>
-      <p style={{ color: "var(--text-muted)", marginTop: 0 }}>
-        Vote on places to stay. Anyone can look; tap your profile to vote.
-      </p>
 
       {currentUser?.isAdmin && (
         <AddListingForm currentUser={currentUser} onAdded={() => mutate()} />

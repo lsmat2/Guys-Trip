@@ -7,14 +7,11 @@ export default function Home() {
   return (
     <Container>
       <h1>Guys Trip</h1>
-      <p style={{ color: "var(--text-muted)", marginTop: 0 }}>
-        Plan the trip: vote on places to stay, pick the weekends that work for you.
-      </p>
 
       <Stack gap={12} style={{ marginTop: 24 }}>
         <Link href="/listings" style={{ textDecoration: "none" }}>
           <Card>
-            <strong>🏠 Listings</strong>
+            <strong>Listings</strong>
             <p style={{ margin: "4px 0 0", color: "var(--text-muted)" }}>
               Browse places and upvote / downvote them.
             </p>
@@ -23,7 +20,7 @@ export default function Home() {
 
         <Link href="/weekends" style={{ textDecoration: "none" }}>
           <Card>
-            <strong>📅 Weekends</strong>
+            <strong>Weekends</strong>
             <p style={{ margin: "4px 0 0", color: "var(--text-muted)" }}>
               Mark which weekends you&apos;re free.
             </p>
