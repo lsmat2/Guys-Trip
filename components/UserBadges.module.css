@@ -51,7 +51,14 @@
   z-index: 5;
 }
 
-.wrap:hover .tip,
+/* hover reveal only on devices that actually hover (avoids stuck tooltip on
+   touch); tap reveal (.open) works everywhere and auto-hides via JS timer */
+@media (hover: hover) {
+  .wrap:hover .tip {
+    opacity: 1;
+  }
+}
+
 .open {
   opacity: 1;
 }
