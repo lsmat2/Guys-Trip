@@ -10,27 +10,6 @@
   display: inline-flex;
 }
 
-.badge {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--surface-3);
-  color: var(--text);
-  border: 1px solid var(--border);
-  font-size: 0.72rem;
-  font-weight: 600;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  cursor: pointer;
-}
-
-.badge:hover {
-  filter: brightness(1.15);
-}
-
 /* name label, shown above on hover/tap */
 .tip {
   position: absolute;

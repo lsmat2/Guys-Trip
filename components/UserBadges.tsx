@@ -1,17 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Avatar from "@/components/ui/Avatar";
 import type { Voter } from "@/lib/types";
 import styles from "./UserBadges.module.css";
 
 /** ms a tapped name stays visible before auto-hiding (touch has no hover). */
-const REVEAL_MS = 1500;
+const REVEAL_MS = 600;
 
 /** A single circular avatar (first letter); shows the full name on hover/tap. */
 export function UserBadge({ name }: { name: string }) {
   const [open, setOpen] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const letter = name.trim().charAt(0).toUpperCase() || "?";
 
   useEffect(
     () => () => {
@@ -29,14 +29,7 @@ export function UserBadge({ name }: { name: string }) {
 
   return (
     <span className={styles.wrap}>
-      <button
-        type="button"
-        className={styles.badge}
-        onClick={reveal}
-        aria-label={name}
-      >
-        {letter}
-      </button>
+      <Avatar name={name} onClick={reveal} aria-label={name} />
       <span
         className={`${styles.tip} ${open ? styles.open : ""}`}
         role="tooltip"

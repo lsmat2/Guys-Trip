@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import Button from "@/components/ui/Button";
+import Avatar from "@/components/ui/Avatar";
 import styles from "./SiteHeader.module.css";
 
 const NAV = [
@@ -13,7 +14,7 @@ const NAV = [
 
 export default function SiteHeader() {
   const pathname = usePathname();
-  const { currentUser, ready, openPicker, signOut } = useAuth();
+  const { currentUser, ready, openPicker } = useAuth();
 
   return (
     <header className={styles.header}>
@@ -40,15 +41,14 @@ export default function SiteHeader() {
         {/* avoid hydration flicker: render identity only once ready */}
         {ready &&
           (currentUser ? (
-            <div className={styles.identity}>
-              <span className={styles.who}>
-                Hi, <span className={styles.name}>{currentUser.name}</span>
-                {currentUser.isAdmin ? " (admin)" : ""}
-              </span>
-              <Button small variant="ghost" onClick={signOut}>
-                Switch
-              </Button>
-            </div>
+            <Avatar
+              name={currentUser.name}
+              onClick={openPicker}
+              aria-label="Switch profile"
+              title={`${currentUser.name}${
+                currentUser.isAdmin ? " (admin)" : ""
+              } — switch profile`}
+            />
           ) : (
             <Button small variant="primary" onClick={openPicker}>
               Sign in
