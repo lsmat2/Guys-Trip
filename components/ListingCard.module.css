@@ -1,6 +1,6 @@
-/* horizontal media-object: squarer photo panel on the left, content on the
-   right. The photo stretches to the card's height (object-fit: cover), so the
-   3:2 / 4:3 source shows far more than the old short banner crop. */
+/* Media-object card. Wide screens: photo panel on the left, content on the
+   right. Phones: the photo becomes a full-width 3:2 hero stacked above the
+   content (no squished crop), and the content is centered. */
 .card {
   padding: 0;
   overflow: hidden;
@@ -30,18 +30,23 @@
   padding: var(--space-4);
   display: flex;
   flex-direction: column;
+  /* center via text-align, NOT align-items: center — the latter shrink-wraps
+     each child to max-content, which stops the title/desc from wrapping. */
+  text-align: center;
   gap: var(--space-2);
 }
 
 .title {
   font-weight: 600;
   font-size: 1.05rem;
+  letter-spacing: -0.01em;
   color: var(--text);
   word-break: break-word;
 }
 
+/* no hover effects — keep the title color stable (overrides global a:hover) */
 .title:hover {
-  color: var(--accent);
+  color: var(--text);
 }
 
 .desc {
@@ -57,7 +62,7 @@
 .footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: var(--space-3);
   flex-wrap: wrap;
   margin-top: auto;
@@ -67,6 +72,7 @@
 .voters {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: var(--space-4);
   font-size: 0.8rem;
 }
@@ -85,10 +91,16 @@
   filter: brightness(0) invert(1);
 }
 
-/* narrow phones: keep horizontal, but let the photo shrink a touch more */
+/* Phones: stack vertically — full-width 3:2 hero photo above centered content. */
 @media (max-width: 640px) {
+  .card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .media {
-    width: clamp(96px, 30%, 140px);
+    width: 100%;
     min-height: 0;
+    aspect-ratio: 3 / 2;
   }
 }

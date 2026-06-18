@@ -46,9 +46,10 @@
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.25);
   --ring: 0 0 0 2px var(--accent);
 
-  /* ---- Type: standard system stack (simple, fast, no external fonts) ---- */
-  --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif;
+  /* ---- Type: Hanken Grotesk (self-hosted via next/font) over a system
+     fallback stack so there's no layout shift before the web font loads ---- */
+  --font-body: var(--font-hanken), system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-display: var(--font-body);
 }
 
