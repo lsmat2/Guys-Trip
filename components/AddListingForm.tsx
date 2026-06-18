@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import ListingFacts from "@/components/ListingFacts";
@@ -115,8 +114,7 @@ export default function AddListingForm({ currentUser, onAdded }: Props) {
   }
 
   return (
-    <Card className={styles.form}>
-      <h2 className={styles.heading}>Add a listing</h2>
+    <div className={styles.form}>
       <div className={styles.row}>
         <Input
           style={{ flex: 1 }}
@@ -178,6 +176,6 @@ export default function AddListingForm({ currentUser, onAdded }: Props) {
         {submitting ? "Adding…" : "Add listing"}
       </Button>
       {error && <p className={styles.error}>{error}</p>}
-    </Card>
+    </div>
   );
 }

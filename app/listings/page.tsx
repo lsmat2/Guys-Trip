@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import useSWR from "swr";
 import Container from "@/components/ui/Container";
 import Stack from "@/components/ui/Stack";
+import Button from "@/components/ui/Button";
+import Modal from "@/components/ui/Modal";
 import ListingCard from "@/components/ListingCard";
 import AddListingForm from "@/components/AddListingForm";
 import { useAuth, type CurrentUser } from "@/lib/auth";
@@ -33,6 +36,7 @@ function applyVote(
 
 export default function ListingsPage() {
   const { currentUser, requireUser } = useAuth();
+  const [addOpen, setAddOpen] = useState(false);
   const { data, mutate, isLoading } = useSWR<ListingWithVotes[]>(
     "/api/listings",
     jsonFetcher,
@@ -74,15 +78,35 @@ export default function ListingsPage() {
 
   return (
     <Container>
-      {currentUser?.isAdmin && (
-        <AddListingForm currentUser={currentUser} onAdded={() => mutate()} />
+      {currentUser && currentUser.isAdmin && (
+        <>
+          <Stack direction="row" justify="flex-end" style={{ marginBottom: 16 }}>
+            <Button small variant="primary" onClick={() => setAddOpen(true)}>
+              Add listing
+            </Button>
+          </Stack>
+          <Modal
+            open={addOpen}
+            onClose={() => setAddOpen(false)}
+            title="Add a listing"
+          >
+            <AddListingForm
+              currentUser={currentUser}
+              onAdded={() => {
+                mutate();
+                setAddOpen(false);
+              }}
+            />
+          </Modal>
+        </>
       )}
 
       {isLoading ? (
         <p style={{ color: "var(--text-muted)" }}>Loading listings…</p>
       ) : listings.length === 0 ? (
         <p style={{ color: "var(--text-muted)" }}>
-          No listings yet{currentUser?.isAdmin ? " — add one above." : "."}
+          No listings yet
+          {currentUser?.isAdmin ? " — add one with the button above." : "."}
         </p>
       ) : (
         <Stack gap={16}>
