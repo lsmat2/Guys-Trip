@@ -34,6 +34,18 @@
   background: var(--bg);
 }
 
+/* "what this listing will show" preview block */
+.facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  margin-bottom: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
 .hint {
   font-size: 0.8rem;
   color: var(--text-muted);

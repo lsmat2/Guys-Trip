@@ -5,23 +5,22 @@
   padding: var(--space-3);
 }
 
-.rank {
-  width: 1.4rem;
-  flex: none;
-  text-align: center;
-  font-weight: 700;
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-}
-
 .thumb {
   flex: none;
-  width: 64px;
-  height: 64px;
+  width: 88px;
+  height: 88px;
   border-radius: var(--radius);
   object-fit: cover;
   background: var(--bg);
   border: 1px solid var(--border);
+}
+
+/* larger, more prominent photo on wider screens */
+@media (min-width: 640px) {
+  .thumb {
+    width: 112px;
+    height: 112px;
+  }
 }
 
 .main {
@@ -36,31 +35,11 @@
   word-break: break-word;
 }
 
+/* no hover effects (touch-first) — keep the title color stable */
 .title:hover {
-  color: var(--accent);
+  color: var(--text);
 }
 
 .voters {
   margin-top: var(--space-2);
-}
-
-/* net-score pill, color keyed to sign */
-.score {
-  flex: none;
-  min-width: 2.4rem;
-  text-align: center;
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  background: var(--surface-2);
-  color: var(--text-muted);
-}
-
-.scorePos {
-  color: var(--up);
-}
-
-.scoreNeg {
-  color: var(--down);
 }

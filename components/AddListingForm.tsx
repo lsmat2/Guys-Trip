@@ -4,10 +4,20 @@ import { useState } from "react";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import ListingFacts from "@/components/ListingFacts";
 import { userHeaders } from "@/lib/api";
 import type { CurrentUser } from "@/lib/auth";
 import type { ListingWithVotes } from "@/lib/types";
 import styles from "./AddListingForm.module.css";
+
+type PreviewFacts = {
+  name: string | null;
+  summary: string | null;
+  rating: number | null;
+  bedrooms: number | null;
+  beds: number | null;
+  baths: number | null;
+};
 
 type Props = {
   currentUser: CurrentUser;
@@ -24,6 +34,8 @@ export default function AddListingForm({ currentUser, onAdded }: Props) {
   const [title, setTitle] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [facts, setFacts] = useState<PreviewFacts | null>(null);
   const [previewing, setPreviewing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -45,6 +57,14 @@ export default function AddListingForm({ currentUser, onAdded }: Props) {
       setTitle(data.title ?? "");
       setImageUrl(data.image ?? "");
       setDescription(data.description ?? "");
+      setFacts({
+        name: data.name ?? null,
+        summary: data.summary ?? null,
+        rating: data.rating ?? null,
+        bedrooms: data.bedrooms ?? null,
+        beds: data.beds ?? null,
+        baths: data.baths ?? null,
+      });
       if (!data.title && !data.image) {
         setError("No preview found (site may block it) — fill in title/image manually.");
       }
@@ -71,6 +91,7 @@ export default function AddListingForm({ currentUser, onAdded }: Props) {
           title: title.trim(),
           imageUrl: imageUrl.trim(),
           description: description.trim(),
+          pricePerNight: price.trim() === "" ? null : Number(price),
         }),
       });
       const data = await res.json();
@@ -83,6 +104,8 @@ export default function AddListingForm({ currentUser, onAdded }: Props) {
       setTitle("");
       setImageUrl("");
       setDescription("");
+      setPrice("");
+      setFacts(null);
       onAdded(data as ListingWithVotes);
     } catch {
       setError("Network error adding listing.");
@@ -111,18 +134,44 @@ export default function AddListingForm({ currentUser, onAdded }: Props) {
         <img src={imageUrl} alt="" className={styles.previewImg} />
       )}
 
+      {facts && (facts.name || facts.summary) && (
+        <div className={styles.facts}>
+          {facts.name && <strong>{facts.name}</strong>}
+          <ListingFacts
+            summary={facts.summary}
+            rating={facts.rating}
+            bedrooms={facts.bedrooms}
+            beds={facts.beds}
+            baths={facts.baths}
+            pricePerNight={price.trim() === "" ? null : Number(price)}
+          />
+        </div>
+      )}
+
       <p className={styles.hint}>
-        Title &amp; image auto-fill from the link. Edit them if the preview is off
-        or missing.
+        Name, photo &amp; details auto-fill from the link (the title smush is
+        parsed into facts). Edit the raw fields below if the preview is off or
+        missing. Price is manual.
       </p>
 
       <label className={styles.field}>
-        <span className={styles.label}>Title</span>
+        <span className={styles.label}>Scraped title (parsed for facts)</span>
         <Input value={title} onChange={(e) => setTitle(e.target.value)} />
       </label>
       <label className={styles.field}>
         <span className={styles.label}>Image URL</span>
         <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
+      </label>
+      <label className={styles.field}>
+        <span className={styles.label}>Price / night (optional)</span>
+        <Input
+          type="number"
+          min="0"
+          inputMode="numeric"
+          placeholder="e.g. 350"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
       </label>
 
       <Button variant="primary" onClick={submit} disabled={submitting}>

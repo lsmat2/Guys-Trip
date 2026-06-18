@@ -1,5 +1,6 @@
 import Card from "@/components/ui/Card";
 import AvatarStack from "@/components/AvatarStack";
+import ListingFacts from "@/components/ListingFacts";
 import type { ListingWithVotes } from "@/lib/types";
 import styles from "./TopListing.module.css";
 
@@ -8,21 +9,15 @@ export function netVotes(l: ListingWithVotes): number {
   return l.upVoters.length - l.downVoters.length;
 }
 
-/** A compact, ranked listing row for the home dashboard. Keeps the photo. */
+/** A compact listing row for the home dashboard (already order-ranked by the
+    parent — the position in the list conveys the ranking, no number needed). */
 export default function TopListing({
-  rank,
   listing,
 }: {
-  rank: number;
   listing: ListingWithVotes;
 }) {
-  const net = netVotes(listing);
-  const scoreClass =
-    net > 0 ? styles.scorePos : net < 0 ? styles.scoreNeg : "";
-
   return (
     <Card className={styles.card}>
-      <span className={styles.rank}>{rank}</span>
       {listing.imageUrl && (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={listing.imageUrl} alt="" className={styles.thumb} />
@@ -36,15 +31,22 @@ export default function TopListing({
         >
           {listing.title || listing.url}
         </a>
+        <ListingFacts
+          summary={listing.summary}
+          rating={listing.rating}
+          bedrooms={listing.bedrooms}
+          beds={listing.beds}
+          baths={listing.baths}
+          pricePerNight={listing.pricePerNight}
+        />
         {listing.upVoters.length > 0 && (
           <div className={styles.voters}>
+            {/* who upvoted — the avatar stack makes the count clear, so no
+                separate net-score number is needed */}
             <AvatarStack voters={listing.upVoters} max={6} />
           </div>
         )}
       </div>
-      <span className={`${styles.score} ${scoreClass}`}>
-        {net > 0 ? `+${net}` : net}
-      </span>
     </Card>
   );
 }

@@ -5,9 +5,17 @@ export type Voter = { id: number; name: string };
 export type ListingWithVotes = {
   id: number;
   url: string;
+  /** resolved display name (the real listing name, not the parsed facts) */
   title: string | null;
   imageUrl: string | null;
-  description: string | null;
+  /** lead descriptor parsed from the scraped title, e.g. "Home in Cartagena" */
+  summary: string | null;
+  rating: number | null;
+  bedrooms: number | null;
+  beds: number | null;
+  baths: number | null;
+  /** manual nightly price (whole units), or null if unset */
+  pricePerNight: number | null;
   addedBy: number | null;
   /** ISO timestamp; used to tiebreak equal-vote rankings (earliest wins). */
   createdAt: string;

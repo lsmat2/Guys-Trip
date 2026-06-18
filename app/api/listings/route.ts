@@ -3,9 +3,44 @@ import { desc, eq } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import { listings, listingVotes, users } from "@/lib/db/schema";
 import { getRequestUser } from "@/lib/server-auth";
-import { fetchOpenGraph, isValidHttpUrl } from "@/lib/og";
+import { fetchOpenGraph, isValidHttpUrl, parseListingTitle } from "@/lib/og";
 
 type Voter = { id: number; name: string };
+
+type ListingRow = typeof listings.$inferSelect;
+
+/**
+ * Map a DB row to the client shape: the real name (og:description, else the
+ * raw title) becomes `title`, and the Airbnb "smush" stored in `title` is
+ * parsed into structured facts on read.
+ */
+function toClientListing(r: ListingRow, up: Voter[], down: Voter[]) {
+  const facts = parseListingTitle(r.title);
+  const name = r.description?.trim() || r.title || r.url;
+  return {
+    id: r.id,
+    url: r.url,
+    title: name,
+    imageUrl: r.imageUrl,
+    summary: facts.summary,
+    rating: facts.rating,
+    bedrooms: facts.bedrooms,
+    beds: facts.beds,
+    baths: facts.baths,
+    pricePerNight: r.pricePerNight,
+    addedBy: r.addedBy,
+    createdAt: r.createdAt,
+    upVoters: up,
+    downVoters: down,
+  };
+}
+
+/** Coerce a request body price into a non-negative whole number, else null. */
+function parsePrice(raw: unknown): number | null {
+  if (raw == null || raw === "") return null;
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= 0 ? Math.round(n) : null;
+}
 
 /**
  * GET /api/listings — public. Each listing carries its up/down voter lists
@@ -37,17 +72,7 @@ export async function GET() {
   }
 
   return NextResponse.json(
-    rows.map((r) => ({
-      id: r.id,
-      url: r.url,
-      title: r.title,
-      imageUrl: r.imageUrl,
-      description: r.description,
-      addedBy: r.addedBy,
-      createdAt: r.createdAt,
-      upVoters: up.get(r.id) ?? [],
-      downVoters: down.get(r.id) ?? [],
-    })),
+    rows.map((r) => toClientListing(r, up.get(r.id) ?? [], down.get(r.id) ?? [])),
   );
 }
 
@@ -68,6 +93,7 @@ export async function POST(req: Request) {
   let image = typeof body?.imageUrl === "string" ? body.imageUrl.trim() : "";
   let description =
     typeof body?.description === "string" ? body.description.trim() : "";
+  const pricePerNight = parsePrice(body?.pricePerNight); // manual, optional
   // "manual" if the admin supplied preview fields, else we scrape ("auto")
   let source = title || image ? "manual" : "auto";
 
@@ -87,6 +113,7 @@ export async function POST(req: Request) {
       title: title || null,
       imageUrl: image || null,
       description: description || null,
+      pricePerNight,
       source,
       addedBy: user.id,
     })
@@ -94,17 +121,7 @@ export async function POST(req: Request) {
 
   const r = inserted[0];
   return NextResponse.json(
-    {
-      id: r.id,
-      url: r.url,
-      title: r.title,
-      imageUrl: r.imageUrl,
-      description: r.description,
-      addedBy: r.addedBy,
-      createdAt: r.createdAt,
-      upVoters: [],
-      downVoters: [],
-    },
+    toClientListing(r, [], []),
     { status: 201 },
   );
 }

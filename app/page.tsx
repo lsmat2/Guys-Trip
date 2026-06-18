@@ -71,8 +71,8 @@ export default function Home() {
           </Card>
         ) : (
           <Stack gap={12}>
-            {ranked.map((l, i) => (
-              <TopListing key={l.id} rank={i + 1} listing={l} />
+            {ranked.map((l) => (
+              <TopListing key={l.id} listing={l} />
             ))}
           </Stack>
         )}

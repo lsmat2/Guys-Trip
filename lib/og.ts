@@ -13,6 +13,61 @@ export type OgData = {
   description: string | null;
 };
 
+/** Structured facts parsed from an Airbnb-style og:title. */
+export type ListingFacts = {
+  /** the lead descriptor, e.g. "Home in Cartagena" */
+  summary: string | null;
+  rating: number | null;
+  bedrooms: number | null;
+  beds: number | null;
+  baths: number | null;
+};
+
+/**
+ * Parse an Airbnb og:title like
+ *   "Home in Cartagena · ★4.91 · 6 bedrooms · 6 beds · 5.5 private baths"
+ * into structured facts. Anything not present (or a non-Airbnb title with no
+ * " · " segments) yields nulls. Done on read, so improving this re-parses every
+ * listing without a migration.
+ */
+export function parseListingTitle(title: string | null): ListingFacts {
+  const facts: ListingFacts = {
+    summary: null,
+    rating: null,
+    bedrooms: null,
+    beds: null,
+    baths: null,
+  };
+  if (!title) return facts;
+
+  for (const seg of title.split("·").map((s) => s.trim()).filter(Boolean)) {
+    if (seg.includes("★")) {
+      const m = seg.match(/([\d.]+)/); // "★New" has no number → rating stays null
+      if (m) facts.rating = Number(m[1]);
+      continue;
+    }
+    const bedrooms = seg.match(/^([\d.]+)\s*bedrooms?\b/i);
+    if (bedrooms) {
+      facts.bedrooms = Number(bedrooms[1]);
+      continue;
+    }
+    const beds = seg.match(/^([\d.]+)\s*beds?\b/i);
+    if (beds) {
+      facts.beds = Number(beds[1]);
+      continue;
+    }
+    const baths = seg.match(/^([\d.]+)\s*(?:private\s+|shared\s+)?baths?\b/i);
+    if (baths) {
+      facts.baths = Number(baths[1]);
+      continue;
+    }
+    // first segment that isn't a rating/count is the descriptor
+    if (facts.summary === null) facts.summary = seg;
+  }
+
+  return facts;
+}
+
 export function isValidHttpUrl(value: string): boolean {
   try {
     const u = new URL(value);

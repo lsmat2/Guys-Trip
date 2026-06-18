@@ -23,9 +23,14 @@ export const users = pgTable("users", {
 export const listings = pgTable("listings", {
   id: serial("id").primaryKey(),
   url: text("url").notNull(),
+  // raw scraped strings: title holds the og:title (Airbnb's "<type> in <city>
+  // · ★rating · N bedrooms · …" smush, parsed into facts on read); description
+  // holds the og:description (the real listing name).
   title: text("title"),
   imageUrl: text("image_url"),
   description: text("description"),
+  // manual, optional — nightly price in whole units (e.g. USD). Not scrapeable.
+  pricePerNight: integer("price_per_night"),
   // how the preview was filled: "auto" (scraped) or "manual"
   source: text("source"),
   addedBy: integer("added_by").references(() => users.id, { onDelete: "set null" }),
