@@ -59,6 +59,11 @@
   overflow: hidden;
 }
 
+/* center the facts row to match this card's centered body */
+.facts {
+  justify-content: center;
+}
+
 .footer {
   display: flex;
   align-items: center;

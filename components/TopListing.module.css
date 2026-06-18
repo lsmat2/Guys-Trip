@@ -40,6 +40,11 @@
   color: var(--text);
 }
 
+/* compact home row: facts stay left-aligned under the title, small top gap */
+.facts {
+  margin-top: var(--space-1);
+}
+
 .voters {
   margin-top: var(--space-2);
 }

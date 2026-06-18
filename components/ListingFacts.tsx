@@ -7,6 +7,8 @@ type Props = {
   beds: number | null;
   baths: number | null;
   pricePerNight: number | null;
+  /** lets the host card align/space the facts row for its own layout */
+  className?: string;
 };
 
 /**
@@ -21,6 +23,7 @@ export default function ListingFacts({
   beds,
   baths,
   pricePerNight,
+  className,
 }: Props) {
   const meta: string[] = [];
   if (summary) meta.push(summary);
@@ -32,7 +35,7 @@ export default function ListingFacts({
   if (meta.length === 0 && pricePerNight == null) return null;
 
   return (
-    <div className={styles.facts}>
+    <div className={[styles.facts, className].filter(Boolean).join(" ")}>
       {meta.length > 0 && <span className={styles.meta}>{meta.join(" · ")}</span>}
       {pricePerNight != null && (
         <span className={styles.price}>${pricePerNight}/night</span>

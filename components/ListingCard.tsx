@@ -51,6 +51,7 @@ export default function ListingCard({
           {listing.title || listing.url}
         </a>
         <ListingFacts
+          className={styles.facts}
           summary={listing.summary}
           rating={listing.rating}
           bedrooms={listing.bedrooms}
