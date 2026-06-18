@@ -65,13 +65,17 @@ export default function ListingCard({
         {hasVoters && (
           <div className={styles.voters}>
             {listing.upVoters.length > 0 && (
-              <span className={styles.up}>
-                ▲ {listing.upVoters.map((v) => v.name).join(", ")}
+              <span className={`${styles.voterGroup} ${styles.up}`}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/upvote.png" alt="up" className={styles.voterIcon} />
+                {listing.upVoters.map((v) => v.name).join(", ")}
               </span>
             )}
             {listing.downVoters.length > 0 && (
-              <span className={styles.down}>
-                ▼ {listing.downVoters.map((v) => v.name).join(", ")}
+              <span className={`${styles.voterGroup} ${styles.down}`}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/downvote.png" alt="down" className={styles.voterIcon} />
+                {listing.downVoters.map((v) => v.name).join(", ")}
               </span>
             )}
           </div>

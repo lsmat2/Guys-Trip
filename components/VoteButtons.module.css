@@ -17,7 +17,6 @@
 
 .btn:hover {
   background: var(--surface-2);
-  border-color: var(--border-strong);
 }
 
 .count {
@@ -32,14 +31,13 @@
   filter: brightness(0) invert(1);
 }
 
+/* selected = colored border only; count text stays neutral */
 .up.active {
   border-color: var(--up);
-  color: var(--up);
   box-shadow: inset 0 0 0 1px var(--up);
 }
 
 .down.active {
   border-color: var(--down);
-  color: var(--down);
   box-shadow: inset 0 0 0 1px var(--down);
 }

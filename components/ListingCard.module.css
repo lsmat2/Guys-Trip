@@ -52,6 +52,20 @@
   font-size: 0.8rem;
 }
 
+.voterGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* small white icon next to voter names */
+.voterIcon {
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
 .up {
   color: var(--up);
 }
