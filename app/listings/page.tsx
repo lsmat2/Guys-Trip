@@ -74,8 +74,6 @@ export default function ListingsPage() {
 
   return (
     <Container>
-      <h1>Listings</h1>
-
       {currentUser?.isAdmin && (
         <AddListingForm currentUser={currentUser} onAdded={() => mutate()} />
       )}

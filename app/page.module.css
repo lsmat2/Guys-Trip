@@ -4,6 +4,12 @@
   margin-top: var(--space-6);
 }
 
+/* first section sits right under the navbar — no extra top gap (the page
+   container already provides top padding, and there's no longer a title). */
+.section:first-of-type {
+  margin-top: 0;
+}
+
 /* section title doubles as the nav link into its full page */
 .sectionLink {
   display: inline-flex;

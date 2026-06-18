@@ -61,8 +61,6 @@ export default function Home() {
 
   return (
     <Container>
-      <h1>Goon Trip</h1>
-
       <section className={styles.section}>
         <SectionLink href="/listings">Top listings</SectionLink>
         {listingsLoading ? (

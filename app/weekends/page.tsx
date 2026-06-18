@@ -47,8 +47,7 @@ export default function WeekendsPage() {
 
   return (
     <Container>
-      <Stack direction="row" justify="space-between" align="center">
-        <h1 style={{ margin: 0 }}>Weekends</h1>
+      <Stack direction="row" justify="flex-end" align="center">
         <Stack direction="row" gap={4}>
           <Button
             small
