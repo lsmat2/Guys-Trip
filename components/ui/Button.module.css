@@ -12,12 +12,6 @@
   transition: background 0.14s ease, border-color 0.14s ease, opacity 0.14s ease;
 }
 
-/* hover gives background feedback only — never touches the border, so an
-   active (white-bordered) button keeps its border on hover */
-.button:hover:not(:disabled) {
-  background: var(--surface-2);
-}
-
 .button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
