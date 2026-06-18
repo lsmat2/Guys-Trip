@@ -9,6 +9,8 @@ export type ListingWithVotes = {
   imageUrl: string | null;
   description: string | null;
   addedBy: number | null;
+  /** ISO timestamp; used to tiebreak equal-vote rankings (earliest wins). */
+  createdAt: string;
   upVoters: Voter[];
   downVoters: Voter[];
 };

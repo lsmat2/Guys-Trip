@@ -85,7 +85,7 @@ weekends (each identified by its Friday date, labeled "Fri–Sun, weekend of <da
 |---|---|---|
 | `/api/users` | GET | List all users (+ `isAdmin` computed from `ADMIN_USERS`) for the profile picker |
 | `/api/users` | POST | Create user `{name}` (dedupe on name) |
-| `/api/listings` | GET | Listings + vote tallies (up/down counts) + voter name lists |
+| `/api/listings` | GET | Listings + voter name lists (up/down) + `created_at` (for dashboard ranking/tiebreak) |
 | `/api/listings` | POST | **Admin only** — add listing `{url, title?, imageUrl?}`; scrapes OG if not provided |
 | `/api/listings/[id]` | DELETE | **Admin only** — remove a listing |
 | `/api/listings/[id]/vote` | POST | `{userId, value}` upsert; same value again clears the vote (toggle) |
@@ -100,25 +100,45 @@ are cached onto the `listings` row at creation so previews persist even if Airbn
 
 ```
 app/
-  layout.tsx                 # CurrentUserProvider + global ProfilePicker modal mount
-  page.tsx                   # simple nav hub (or redirect to /listings)
+  layout.tsx                 # mounts <Providers> (CurrentUser context + global ProfilePicker modal)
+  providers.tsx              # client provider wrapper
+  page.tsx                   # home DASHBOARD: top-3 listings + most-popular weekend (see below)
+  page.module.css            # dashboard section framing + title-as-nav link
   listings/page.tsx          # listing list, votes, public stats; admin-only add form
-  weekends/page.tsx          # weekend calendar, toggle availability, public stats
+  weekends/page.tsx          # weekend calendar (grid / list views), availability toggle
   api/...                    # route handlers above
 components/
-  ui/                        # Button, Card, Modal, Stack — bare CSS primitives (reusable core)
+  ui/                        # Avatar, Button, Card, Modal, Stack — bare CSS primitives (reusable core)
   ProfilePicker.tsx          # Netflix-style picker + "add new"
-  ListingCard.tsx            # preview image, title, VoteButtons, voter name lists
+  ListingCard.tsx            # horizontal media-object: squarer photo + title, VoteButtons, voters
   VoteButtons.tsx            # up/down with counts + optimistic toggle
-  WeekendCalendar.tsx        # rows/grid of weekends, availability toggle, who's-free counts
+  UserBadges.tsx             # row of name-on-hover avatar badges (full, wrapping)
+  AvatarStack.tsx            # overlapping avatars condensed to a "+N" overflow chip (reusable)
+  CalendarView.tsx           # month-grid calendar; desktop adds an aligned who's-free avatar column
+  WeekendCalendar.tsx        # list view: one row per weekend, availability toggle + who's-free
+  TopListing.tsx             # dashboard ranked listing row (exports netVotes())
+  TopWeekend.tsx             # dashboard weekend card (label + count + AvatarStack)
   AddListingForm.tsx         # admin only; paste URL → preview → confirm/manual override
 lib/
-  db/ (client.ts, schema.ts) # Drizzle client + schema
-  auth.tsx                   # useCurrentUser() context, localStorage, requireSignIn gate, isAdmin
+  db/ (index.ts, schema.ts)  # lazy Drizzle client (getDb) + schema
+  auth.tsx                   # useAuth() context, localStorage, requireUser() gate, isAdmin
+  api.ts                     # SWR jsonFetcher + userHeaders()
   weekends.ts                # rolling-weekend generator (WEEKEND_WINDOW_MONTHS)
   og.ts                      # fetch + parse Open Graph tags
+  types.ts                   # client-facing API JSON shapes
 drizzle/                     # generated migrations
 ```
+
+### Home dashboard (`app/page.tsx`)
+The home page is a client dashboard (SWR over `/api/listings` + `/api/availability`), not a
+plain nav hub. Nav is kept minimal: each section title is a link into its full page (a small ↗),
+so there are no separate nav buttons.
+
+- **Top listings** — up to 3 listings ranked by **net votes** (`upVoters − downVoters`, descending),
+  tiebroken by **earliest `created_at`**. Shows an empty state until at least one vote exists.
+- **Most popular weekend** — the weekend with the most users available. Weekends have no votes of
+  their own, so "popularity" = availability count. **Ties are all shown**; only one card otherwise.
+  Empty state until someone marks availability.
 
 **Identity & gating flow:** `useCurrentUser()` reads `localStorage`. Viewing is always open.
 Any mutating action (vote, set availability, add listing) checks `currentUser`; if absent it

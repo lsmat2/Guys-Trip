@@ -1,18 +1,36 @@
+/* horizontal media-object: squarer photo panel on the left, content on the
+   right. The photo stretches to the card's height (object-fit: cover), so the
+   3:2 / 4:3 source shows far more than the old short banner crop. */
 .card {
   padding: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+}
+
+.media {
+  flex: 0 0 auto;
+  width: clamp(116px, 32%, 224px);
+  min-height: 172px;
+  align-self: stretch;
+  background: var(--bg);
   overflow: hidden;
 }
 
 .image {
   display: block;
   width: 100%;
-  height: 180px;
+  height: 100%;
   object-fit: cover;
-  background: var(--bg);
 }
 
 .body {
+  flex: 1;
+  min-width: 0;
   padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
 .title {
@@ -27,7 +45,7 @@
 }
 
 .desc {
-  margin: var(--space-2) 0 0;
+  margin: 0;
   color: var(--text-muted);
   font-size: 0.9rem;
   display: -webkit-box;
@@ -41,14 +59,15 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  margin-top: var(--space-4);
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: var(--space-2);
 }
 
 .voters {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-4);
-  margin-top: var(--space-3);
   font-size: 0.8rem;
 }
 
@@ -64,4 +83,12 @@
   height: 15px;
   object-fit: contain;
   filter: brightness(0) invert(1);
+}
+
+/* narrow phones: keep horizontal, but let the photo shrink a touch more */
+@media (max-width: 640px) {
+  .media {
+    width: clamp(96px, 30%, 140px);
+    min-height: 0;
+  }
 }

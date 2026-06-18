@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import AvatarStack from "@/components/AvatarStack";
 import type { CurrentUser } from "@/lib/auth";
 import type { Voter, WeekendInfo } from "@/lib/types";
 import styles from "./CalendarView.module.css";
@@ -13,6 +14,7 @@ type Props = {
 };
 
 const WEEKDAY_HEADERS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+const FRIDAY_COL = 4; // index of Friday within a Monday-indexed week row
 const MONTH_NAMES = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
@@ -67,14 +69,20 @@ export default function CalendarView({
   }, [weekends]);
 
   return (
-    <div>
+    <div className={styles.calendar}>
       {months.map(({ y, m }) => {
         const daysInMonth = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
         const leadingBlanks = mondayIndex(y, m, 1);
+
+        // flat day cells, then chunked into Monday-aligned week rows so each
+        // row can carry a trailing avatar column aligned to its weekend
         const cells: (number | null)[] = [
           ...Array.from({ length: leadingBlanks }, () => null),
           ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
         ];
+        while (cells.length % 7 !== 0) cells.push(null);
+        const weeks: (number | null)[][] = [];
+        for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
 
         return (
           <div key={`${y}-${m}`} className={styles.month}>
@@ -90,46 +98,71 @@ export default function CalendarView({
                   {h}
                 </div>
               ))}
+              {/* spacer header above the avatar column */}
+              <div className={`${styles.head} ${styles.avatarCell}`} />
 
-              {cells.map((day, idx) => {
-                if (day === null) {
-                  return <div key={`b-${idx}`} className={styles.cell} />;
-                }
-
-                const key = weekendKeyFor(y, m, day);
-                const selectable = key !== null && keySet.has(key);
-
-                if (!selectable) {
-                  return (
-                    <div key={iso(y, m, day)} className={`${styles.cell} ${styles.day}`}>
-                      {day}
-                    </div>
-                  );
-                }
-
-                const voters = available[key] ?? [];
-                const iAmFree = currentUser
-                  ? voters.some((v) => v.id === currentUser.id)
-                  : false;
-                const names = voters.map((v) => v.name).join(", ");
-                // one count per weekend: show it on the Friday cell only
-                const isFriday = new Date(Date.UTC(y, m, day)).getUTCDay() === 5;
+              {weeks.map((week, wi) => {
+                // the weekend that "belongs" to this row, by its Friday cell
+                const friday = week[FRIDAY_COL];
+                const rowKey =
+                  friday !== null ? weekendKeyFor(y, m, friday) : null;
+                const rowVoters =
+                  rowKey && keySet.has(rowKey) ? available[rowKey] ?? [] : [];
 
                 return (
-                  <button
-                    key={iso(y, m, day)}
-                    className={`${styles.cell} ${styles.weekend} ${
-                      iAmFree ? styles.free : ""
-                    }`}
-                    onClick={() => onToggle(key, !iAmFree)}
-                    title={names ? `Free: ${names}` : "No one yet"}
-                    aria-pressed={iAmFree}
-                  >
-                    {day}
-                    {isFriday && voters.length > 0 && (
-                      <span className={styles.count}>{voters.length}</span>
-                    )}
-                  </button>
+                  <div key={wi} className={styles.week}>
+                    {week.map((day, idx) => {
+                      if (day === null) {
+                        return (
+                          <div key={`b-${wi}-${idx}`} className={styles.cell} />
+                        );
+                      }
+
+                      const key = weekendKeyFor(y, m, day);
+                      const selectable = key !== null && keySet.has(key);
+
+                      if (!selectable) {
+                        return (
+                          <div
+                            key={iso(y, m, day)}
+                            className={`${styles.cell} ${styles.day}`}
+                          >
+                            {day}
+                          </div>
+                        );
+                      }
+
+                      const voters = available[key] ?? [];
+                      const iAmFree = currentUser
+                        ? voters.some((v) => v.id === currentUser.id)
+                        : false;
+                      const names = voters.map((v) => v.name).join(", ");
+                      const isFriday =
+                        new Date(Date.UTC(y, m, day)).getUTCDay() === 5;
+
+                      return (
+                        <button
+                          key={iso(y, m, day)}
+                          className={`${styles.cell} ${styles.weekend} ${
+                            iAmFree ? styles.free : ""
+                          }`}
+                          onClick={() => onToggle(key, !iAmFree)}
+                          title={names ? `Free: ${names}` : "No one yet"}
+                          aria-pressed={iAmFree}
+                        >
+                          {day}
+                          {isFriday && voters.length > 0 && (
+                            <span className={styles.count}>{voters.length}</span>
+                          )}
+                        </button>
+                      );
+                    })}
+
+                    {/* desktop-only: who's free this weekend, aligned to the row */}
+                    <div className={styles.avatarCell}>
+                      <AvatarStack voters={rowVoters} />
+                    </div>
+                  </div>
                 );
               })}
             </div>

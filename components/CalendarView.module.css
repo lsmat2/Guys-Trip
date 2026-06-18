@@ -1,3 +1,7 @@
+.calendar {
+  width: 100%;
+}
+
 .month {
   margin-bottom: var(--space-6);
 }
@@ -8,10 +12,20 @@
   margin: 0 0 var(--space-3);
 }
 
+/* desktop: fixed compact day squares on the left, an avatar column filling
+   the remaining width on the right. The grid + each week row share the same
+   template so avatar cells line up with their weekend's row. */
 .grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, 44px) minmax(0, 1fr);
   gap: var(--space-1);
+}
+
+/* a week is a subgrid row: 7 day cells + 1 avatar cell, same columns */
+.week {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
 }
 
 .head {
@@ -73,4 +87,25 @@
   margin-top: 3px;
   opacity: 0.85;
   font-variant-numeric: tabular-nums;
+}
+
+/* the who's-free avatars beside each weekend row */
+.avatarCell {
+  display: flex;
+  align-items: center;
+  padding-left: var(--space-3);
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* mobile: drop the avatar column entirely and let the squares span full width,
+   matching the original full-bleed calendar (parity with the count badge). */
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(7, 1fr);
+  }
+
+  .avatarCell {
+    display: none;
+  }
 }

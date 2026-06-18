@@ -34,9 +34,11 @@ export default function ListingCard({
   return (
     <Card className={styles.card}>
       {listing.imageUrl && (
-        // arbitrary external image hosts → plain <img> (no next/image domain config)
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={listing.imageUrl} alt="" className={styles.image} />
+        <div className={styles.media}>
+          {/* arbitrary external image hosts → plain <img> (no next/image domain config) */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={listing.imageUrl} alt="" className={styles.image} />
+        </div>
       )}
       <div className={styles.body}>
         <a
@@ -48,20 +50,6 @@ export default function ListingCard({
           {listing.title || listing.url}
         </a>
         {listing.description && <p className={styles.desc}>{listing.description}</p>}
-
-        <div className={styles.footer}>
-          <VoteButtons
-            upCount={listing.upVoters.length}
-            downCount={listing.downVoters.length}
-            myVote={myVote}
-            onVote={(value) => onVote(listing.id, value)}
-          />
-          {currentUser?.isAdmin && (
-            <Button small variant="danger" onClick={() => onDelete(listing.id)}>
-              Delete
-            </Button>
-          )}
-        </div>
 
         {hasVoters && (
           <div className={styles.voters}>
@@ -81,6 +69,20 @@ export default function ListingCard({
             )}
           </div>
         )}
+
+        <div className={styles.footer}>
+          <VoteButtons
+            upCount={listing.upVoters.length}
+            downCount={listing.downVoters.length}
+            myVote={myVote}
+            onVote={(value) => onVote(listing.id, value)}
+          />
+          {currentUser?.isAdmin && (
+            <Button small variant="danger" onClick={() => onDelete(listing.id)}>
+              Delete
+            </Button>
+          )}
+        </div>
       </div>
     </Card>
   );
