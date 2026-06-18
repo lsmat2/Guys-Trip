@@ -112,6 +112,8 @@ export default function CalendarView({
                   ? voters.some((v) => v.id === currentUser.id)
                   : false;
                 const names = voters.map((v) => v.name).join(", ");
+                // one count per weekend: show it on the Friday cell only
+                const isFriday = new Date(Date.UTC(y, m, day)).getUTCDay() === 5;
 
                 return (
                   <button
@@ -124,7 +126,7 @@ export default function CalendarView({
                     aria-pressed={iAmFree}
                   >
                     {day}
-                    {voters.length > 0 && (
+                    {isFriday && voters.length > 0 && (
                       <span className={styles.count}>{voters.length}</span>
                     )}
                   </button>

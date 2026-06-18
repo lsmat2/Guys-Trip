@@ -3,6 +3,7 @@
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import VoteButtons from "@/components/VoteButtons";
+import UserBadges from "@/components/UserBadges";
 import type { CurrentUser } from "@/lib/auth";
 import type { ListingWithVotes } from "@/lib/types";
 import styles from "./ListingCard.module.css";
@@ -65,17 +66,17 @@ export default function ListingCard({
         {hasVoters && (
           <div className={styles.voters}>
             {listing.upVoters.length > 0 && (
-              <span className={`${styles.voterGroup} ${styles.up}`}>
+              <span className={styles.voterGroup}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/upvote.png" alt="up" className={styles.voterIcon} />
-                {listing.upVoters.map((v) => v.name).join(", ")}
+                <UserBadges voters={listing.upVoters} />
               </span>
             )}
             {listing.downVoters.length > 0 && (
-              <span className={`${styles.voterGroup} ${styles.down}`}>
+              <span className={styles.voterGroup}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/downvote.png" alt="down" className={styles.voterIcon} />
-                {listing.downVoters.map((v) => v.name).join(", ")}
+                <UserBadges voters={listing.downVoters} />
               </span>
             )}
           </div>
