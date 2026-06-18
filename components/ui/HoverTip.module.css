@@ -3,7 +3,8 @@
   display: inline-flex;
 }
 
-/* the tip, shown above the trigger on hover/tap */
+/* the tip, mounted only while shown (hover/tap) so closed tips can't expand
+   the page scroll region. Fades in on mount. */
 .tip {
   position: absolute;
   bottom: calc(100% + 6px);
@@ -17,10 +18,9 @@
   padding: 2px 8px;
   border-radius: var(--radius-sm);
   white-space: nowrap;
-  opacity: 0;
   pointer-events: none;
-  transition: opacity 0.12s ease;
   z-index: 5;
+  animation: tipIn 0.12s ease;
 }
 
 /* anchor the tip's right edge to the trigger (for triggers near the right
@@ -31,14 +31,11 @@
   transform: none;
 }
 
-/* hover reveal only on devices that actually hover (avoids a stuck tip on
-   touch); tap reveal (.open) works everywhere and auto-hides via JS timer */
-@media (hover: hover) {
-  .wrap:hover .tip {
+@keyframes tipIn {
+  from {
+    opacity: 0;
+  }
+  to {
     opacity: 1;
   }
-}
-
-.open {
-  opacity: 1;
 }

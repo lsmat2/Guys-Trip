@@ -22,9 +22,11 @@ type Props = {
 };
 
 /**
- * Wraps a trigger and reveals a tooltip above it on hover (hover-capable
- * devices) or tap (auto-hides after a moment, so it never sticks). Shared by
- * the avatar badges and the AvatarStack "+N" chip so they behave identically.
+ * Wraps a trigger and reveals a tooltip above it on hover (mouse) or tap
+ * (auto-hides after a moment). The tip is only mounted while shown — closed
+ * tips would otherwise sit off-screen at opacity:0 and expand the page's
+ * scroll region (phantom horizontal/vertical scroll). Shared by the avatar
+ * badges and the AvatarStack "+N" chip so they behave identically.
  */
 export default function HoverTip({
   label,
@@ -32,7 +34,8 @@ export default function HoverTip({
   className,
   align = "center",
 }: Props) {
-  const [open, setOpen] = useState(false);
+  const [tapped, setTapped] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(
@@ -44,22 +47,34 @@ export default function HoverTip({
 
   // tap reveals, then auto-hides — so it never "persists" like a toggle
   function reveal() {
-    setOpen(true);
+    setTapped(true);
     if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => setOpen(false), REVEAL_MS);
+    timer.current = setTimeout(() => setTapped(false), REVEAL_MS);
   }
 
+  const visible = tapped || hovered;
+
   return (
-    <span className={`${styles.wrap} ${className ?? ""}`.trim()} onClick={reveal}>
+    <span
+      className={`${styles.wrap} ${className ?? ""}`.trim()}
+      onClick={reveal}
+      // hover only for a real pointer — touch never sets it, so it can't stick
+      onPointerEnter={(e) => {
+        if (e.pointerType === "mouse") setHovered(true);
+      }}
+      onPointerLeave={(e) => {
+        if (e.pointerType === "mouse") setHovered(false);
+      }}
+    >
       {children}
-      <span
-        className={`${styles.tip} ${align === "end" ? styles.alignEnd : ""} ${
-          open ? styles.open : ""
-        }`.trim()}
-        role="tooltip"
-      >
-        {label}
-      </span>
+      {visible && (
+        <span
+          className={`${styles.tip} ${align === "end" ? styles.alignEnd : ""}`.trim()}
+          role="tooltip"
+        >
+          {label}
+        </span>
+      )}
     </span>
   );
 }
