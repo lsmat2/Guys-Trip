@@ -19,9 +19,9 @@ export default function SiteHeader() {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
-        {/* Left zone — brand links home */}
-        <Link href="/" className={styles.brand}>
-          Goon Trip
+        {/* Left zone — logo links home */}
+        <Link href="/" className={styles.brand} aria-label="Goon Trip — home">
+          <img src="/goon-trip.png" alt="Goon Trip" className={styles.logo} />
         </Link>
 
         {/* Center zone — page nav, evenly spread across the flexible middle */}

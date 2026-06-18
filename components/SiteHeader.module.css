@@ -29,18 +29,33 @@
   gap: var(--space-4);
 }
 
-/* ---- Left: brand ---- */
+/* ---- Left: logo ---- */
 .brand {
   flex: 0 0 auto;
-  font-weight: 700;
-  font-size: 1.05rem;
-  letter-spacing: -0.01em;
-  color: var(--text);
-  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  /* small target padding without shifting the optical left edge */
+  margin: calc(-1 * var(--space-1)) 0;
+  padding: var(--space-1) 0;
+  border-radius: var(--radius);
 }
 
-.brand:hover {
-  color: var(--text);
+.logo {
+  display: block;
+  height: 40px;
+  width: auto;
+  /* the source wordmark is white on transparent; a hair of opacity lift on
+     hover reads as interactive without a color shift */
+  opacity: 0.95;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.brand:hover .logo {
+  opacity: 1;
+}
+
+.brand:active .logo {
+  transform: scale(0.97);
 }
 
 /* ---- Center: nav, evenly spread ---- */
@@ -107,7 +122,7 @@
     padding: var(--space-3);
   }
 
-  .brand {
-    font-size: 1rem;
+  .logo {
+    height: 32px;
   }
 }
