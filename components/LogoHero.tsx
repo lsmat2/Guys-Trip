@@ -18,7 +18,8 @@ const REVEAL_MS = 3000;
  * logo. Purely decorative — no nav, no data.
  */
 export default function LogoHero() {
-  const [phase, setPhase] = useState<Phase>("idle");
+  // start mid-reveal so the hands flash on first paint (no setState-in-effect)
+  const [phase, setPhase] = useState<Phase>("enter");
   // hold the in-flight timers so a re-tap resets the sequence instead of stacking
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -27,9 +28,9 @@ export default function LogoHero() {
     timers.current = [];
   }
 
-  function flashHands() {
-    clearTimers();
-    setPhase("enter");
+  // schedule the timed phase transitions for the current "enter"; the setState
+  // calls live inside timeouts, so this is safe to call from an effect
+  function scheduleSequence() {
     timers.current.push(
       setTimeout(() => setPhase("bobble"), SLIDE_MS),
       setTimeout(() => setPhase("exit"), REVEAL_MS - SLIDE_MS),
@@ -37,12 +38,18 @@ export default function LogoHero() {
     );
   }
 
-  // flash once on load; clean up any pending timers if we unmount mid-reveal
+  function flashHands() {
+    clearTimers();
+    setPhase("enter");
+    scheduleSequence();
+  }
+
+  // drive the on-load flash; clean up pending timers if we unmount mid-reveal.
+  // phase starts at "enter", so the effect only schedules the timed transitions
+  // (setState lives inside the timeouts — no synchronous set-state-in-effect).
   useEffect(() => {
-    flashHands();
+    scheduleSequence();
     return clearTimers;
-    // run once on mount — flashHands is stable for our purposes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
