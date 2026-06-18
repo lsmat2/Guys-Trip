@@ -31,6 +31,9 @@ export const listings = pgTable("listings", {
   description: text("description"),
   // manual, optional — nightly price in whole units (e.g. USD). Not scrapeable.
   pricePerNight: integer("price_per_night"),
+  // admin-entered list of short, high-signal notes (e.g. "Hot tub included",
+  // "$500 flight on Jun 12"). Ordered; rendered as pills. null/absent = none.
+  importantNotes: text("important_notes").array(),
   // how the preview was filled: "auto" (scraped) or "manual"
   source: text("source"),
   addedBy: integer("added_by").references(() => users.id, { onDelete: "set null" }),

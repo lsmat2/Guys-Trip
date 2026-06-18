@@ -64,6 +64,11 @@
   justify-content: center;
 }
 
+/* center the note pills to match this card's centered body */
+.notes {
+  justify-content: center;
+}
+
 .footer {
   display: flex;
   align-items: center;

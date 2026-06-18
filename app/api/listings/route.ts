@@ -28,6 +28,7 @@ function toClientListing(r: ListingRow, up: Voter[], down: Voter[]) {
     beds: facts.beds,
     baths: facts.baths,
     pricePerNight: r.pricePerNight,
+    importantNotes: r.importantNotes ?? [],
     addedBy: r.addedBy,
     createdAt: r.createdAt,
     upVoters: up,
@@ -40,6 +41,23 @@ function parsePrice(raw: unknown): number | null {
   if (raw == null || raw === "") return null;
   const n = Number(raw);
   return Number.isFinite(n) && n >= 0 ? Math.round(n) : null;
+}
+
+/** Max notes per listing and max chars per note — server-side sanity guards. */
+const MAX_NOTES = 12;
+const MAX_NOTE_LEN = 140;
+
+/**
+ * Normalize a request body `importantNotes` into a clean string[]: trims each
+ * entry, drops empties, and caps count/length so a malformed client can't bloat
+ * the row. Returns [] for anything that isn't an array.
+ */
+function parseNotes(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((n) => String(n).trim().slice(0, MAX_NOTE_LEN))
+    .filter(Boolean)
+    .slice(0, MAX_NOTES);
 }
 
 /**
@@ -94,6 +112,7 @@ export async function POST(req: Request) {
   let description =
     typeof body?.description === "string" ? body.description.trim() : "";
   const pricePerNight = parsePrice(body?.pricePerNight); // manual, optional
+  const importantNotes = parseNotes(body?.importantNotes); // manual, optional
   // "manual" if the admin supplied preview fields, else we scrape ("auto")
   let source = title || image ? "manual" : "auto";
 
@@ -114,6 +133,7 @@ export async function POST(req: Request) {
       imageUrl: image || null,
       description: description || null,
       pricePerNight,
+      importantNotes: importantNotes.length ? importantNotes : null,
       source,
       addedBy: user.id,
     })

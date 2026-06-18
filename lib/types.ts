@@ -16,6 +16,8 @@ export type ListingWithVotes = {
   baths: number | null;
   /** manual nightly price (whole units), or null if unset */
   pricePerNight: number | null;
+  /** admin-entered short notes, rendered as pills; [] when none */
+  importantNotes: string[];
   addedBy: number | null;
   /** ISO timestamp; used to tiebreak equal-vote rankings (earliest wins). */
   createdAt: string;

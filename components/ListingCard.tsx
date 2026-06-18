@@ -5,6 +5,7 @@ import Button from "@/components/ui/Button";
 import VoteButtons from "@/components/VoteButtons";
 import UserBadges from "@/components/UserBadges";
 import ListingFacts from "@/components/ListingFacts";
+import ListingNotes from "@/components/ListingNotes";
 import type { CurrentUser } from "@/lib/auth";
 import type { ListingWithVotes } from "@/lib/types";
 import styles from "./ListingCard.module.css";
@@ -59,6 +60,7 @@ export default function ListingCard({
           baths={listing.baths}
           pricePerNight={listing.pricePerNight}
         />
+        <ListingNotes notes={listing.importantNotes} className={styles.notes} />
 
         {hasVoters && (
           <div className={styles.voters}>

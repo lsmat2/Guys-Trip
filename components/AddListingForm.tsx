@@ -3,7 +3,9 @@
 import { useState } from "react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import Textarea from "@/components/ui/Textarea";
 import ListingFacts from "@/components/ListingFacts";
+import ListingNotes from "@/components/ListingNotes";
 import { userHeaders } from "@/lib/api";
 import type { CurrentUser } from "@/lib/auth";
 import type { ListingWithVotes } from "@/lib/types";
@@ -34,10 +36,17 @@ export default function AddListingForm({ currentUser, onAdded }: Props) {
   const [imageUrl, setImageUrl] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [notes, setNotes] = useState("");
   const [facts, setFacts] = useState<PreviewFacts | null>(null);
   const [previewing, setPreviewing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // one note per non-empty line; drives both the live preview and the POST body
+  const parsedNotes = notes
+    .split("\n")
+    .map((n) => n.trim())
+    .filter(Boolean);
 
   async function preview() {
     if (!url.trim()) {
@@ -91,6 +100,7 @@ export default function AddListingForm({ currentUser, onAdded }: Props) {
           imageUrl: imageUrl.trim(),
           description: description.trim(),
           pricePerNight: price.trim() === "" ? null : Number(price),
+          importantNotes: parsedNotes,
         }),
       });
       const data = await res.json();
@@ -104,6 +114,7 @@ export default function AddListingForm({ currentUser, onAdded }: Props) {
       setImageUrl("");
       setDescription("");
       setPrice("");
+      setNotes("");
       setFacts(null);
       onAdded(data as ListingWithVotes);
     } catch {
@@ -132,17 +143,20 @@ export default function AddListingForm({ currentUser, onAdded }: Props) {
         <img src={imageUrl} alt="" className={styles.previewImg} />
       )}
 
-      {facts && (facts.name || facts.summary) && (
+      {((facts && (facts.name || facts.summary)) || parsedNotes.length > 0) && (
         <div className={styles.facts}>
-          {facts.name && <strong>{facts.name}</strong>}
-          <ListingFacts
-            summary={facts.summary}
-            rating={facts.rating}
-            bedrooms={facts.bedrooms}
-            beds={facts.beds}
-            baths={facts.baths}
-            pricePerNight={price.trim() === "" ? null : Number(price)}
-          />
+          {facts?.name && <strong>{facts.name}</strong>}
+          {facts && (
+            <ListingFacts
+              summary={facts.summary}
+              rating={facts.rating}
+              bedrooms={facts.bedrooms}
+              beds={facts.beds}
+              baths={facts.baths}
+              pricePerNight={price.trim() === "" ? null : Number(price)}
+            />
+          )}
+          <ListingNotes notes={parsedNotes} />
         </div>
       )}
 
@@ -169,6 +183,15 @@ export default function AddListingForm({ currentUser, onAdded }: Props) {
           placeholder="e.g. 350"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
+        />
+      </label>
+      <label className={styles.field}>
+        <span className={styles.label}>Important notes (one per line)</span>
+        <Textarea
+          rows={3}
+          placeholder={"Hot tub included\nRight on the ocean\n$500 flight on Jun 12"}
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
         />
       </label>
 
