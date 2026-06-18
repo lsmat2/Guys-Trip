@@ -11,17 +11,17 @@
   --bg: #0c0d10;
   --surface: #15171c; /* cards, header, modals */
   --surface-2: #1e2128; /* inputs, hover states */
-  --border: #2a2e36;
-  --border-strong: #3a3f49;
+  --border: #20242b;
+  --border-strong: #2e333b;
 
   /* ---- Text ---- */
   --text: #eceef1;
   --text-muted: #888f99;
 
-  /* ---- Brand accent (the ONLY non-functional color) ---- */
-  --accent: #e8b75c;
-  --accent-hover: #f2c777;
-  --accent-contrast: #17120a; /* text on top of accent */
+  /* ---- Brand accent (the ONLY non-functional color) — muted, low-key ---- */
+  --accent: #c4a572;
+  --accent-hover: #d4b78a;
+  --accent-contrast: #16130c; /* text on top of accent */
 
   /* ---- Functional only: votes / destructive ---- */
   --up: #5ad27d;
@@ -37,16 +37,17 @@
   --space-6: 32px;
   --space-8: 48px;
 
-  /* ---- Shape & elevation ---- */
-  --radius: 12px;
-  --radius-sm: 8px;
+  /* ---- Shape & elevation (low radius = crisp/minimal) ---- */
+  --radius: 4px;
+  --radius-sm: 4px;
   --container: 720px;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.25);
   --ring: 0 0 0 2px var(--accent);
 
-  /* ---- Type (families come from next/font; see layout.tsx) ---- */
-  --font-display: var(--font-display-var), "Bricolage Grotesque", sans-serif;
-  --font-body: var(--font-body-var), system-ui, -apple-system, sans-serif;
+  /* ---- Type: standard system stack (simple, fast, no external fonts) ---- */
+  --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  --font-display: var(--font-body);
 }
 
 * {
@@ -74,8 +75,7 @@ h2,
 h3,
 .display {
   font-family: var(--font-display);
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  line-height: 1.2;
   margin: 0 0 var(--space-3);
 }
 
