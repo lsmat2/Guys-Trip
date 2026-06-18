@@ -25,10 +25,6 @@
   font-weight: 600;
 }
 
-.primary:hover:not(:disabled) {
-  filter: brightness(1.15);
-}
-
 /* affirmative / "yes" state, e.g. marking yourself available */
 .success {
   background: var(--up);
@@ -37,19 +33,10 @@
   font-weight: 600;
 }
 
-.success:hover:not(:disabled) {
-  filter: brightness(1.07);
-}
-
 .danger {
   background: transparent;
   border-color: transparent;
   color: var(--danger);
-}
-
-.danger:hover:not(:disabled) {
-  background: var(--surface-2);
-  border-color: var(--border);
 }
 
 .ghost {

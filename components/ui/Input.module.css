@@ -12,10 +12,6 @@
   color: var(--text-muted);
 }
 
-.input:hover:not(:disabled) {
-  border-color: var(--border-strong);
-}
-
 .input:focus {
   outline: none;
   border-color: var(--accent);

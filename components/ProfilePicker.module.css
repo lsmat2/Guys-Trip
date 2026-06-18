@@ -24,10 +24,6 @@
   cursor: pointer;
 }
 
-.profile:hover {
-  border-color: var(--accent);
-}
-
 .avatar {
   width: 44px;
   height: 44px;

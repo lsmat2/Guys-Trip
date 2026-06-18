@@ -15,10 +15,6 @@
   cursor: pointer;
 }
 
-.btn:hover {
-  background: var(--surface-2);
-}
-
 .count {
   font-variant-numeric: tabular-nums;
 }
