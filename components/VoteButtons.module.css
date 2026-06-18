@@ -16,7 +16,8 @@
 }
 
 .btn:hover {
-  filter: brightness(0.97);
+  background: var(--surface-2);
+  border-color: var(--border-strong);
 }
 
 .count {

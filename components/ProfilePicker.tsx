@@ -5,6 +5,7 @@ import useSWR, { useSWRConfig } from "swr";
 import { useAuth, type CurrentUser } from "@/lib/auth";
 import Modal from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 import styles from "./ProfilePicker.module.css";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
@@ -89,9 +90,9 @@ export default function ProfilePicker() {
         New here? Add your name
       </label>
       <div className={styles.createRow}>
-        <input
+        <Input
           id="new-profile"
-          className={styles.input}
+          style={{ flex: 1 }}
           value={name}
           maxLength={40}
           placeholder="e.g. Jake"

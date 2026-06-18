@@ -25,19 +25,6 @@
   margin-bottom: var(--space-1);
 }
 
-.input {
-  width: 100%;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--text);
-}
-
-.flex1 {
-  flex: 1;
-}
-
 .previewImg {
   width: 100%;
   max-height: 160px;

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 import { userHeaders } from "@/lib/api";
 import type { CurrentUser } from "@/lib/auth";
 import type { ListingWithVotes } from "@/lib/types";
@@ -94,8 +95,8 @@ export default function AddListingForm({ currentUser, onAdded }: Props) {
     <Card className={styles.form}>
       <h2 className={styles.heading}>Add a listing</h2>
       <div className={styles.row}>
-        <input
-          className={`${styles.input} ${styles.flex1}`}
+        <Input
+          style={{ flex: 1 }}
           placeholder="Paste an Airbnb (or any) link…"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
@@ -117,19 +118,11 @@ export default function AddListingForm({ currentUser, onAdded }: Props) {
 
       <label className={styles.field}>
         <span className={styles.label}>Title</span>
-        <input
-          className={styles.input}
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        <Input value={title} onChange={(e) => setTitle(e.target.value)} />
       </label>
       <label className={styles.field}>
         <span className={styles.label}>Image URL</span>
-        <input
-          className={styles.input}
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-        />
+        <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
       </label>
 
       <Button variant="primary" onClick={submit} disabled={submitting}>
