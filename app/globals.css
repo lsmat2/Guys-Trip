@@ -23,8 +23,9 @@
   --accent-hover: #d4b78a;
   --accent-contrast: #16130c; /* text on top of accent */
 
-  /* ---- Functional only: votes / destructive ---- */
+  /* ---- Functional only: votes / availability / destructive ---- */
   --up: #5ad27d;
+  --up-contrast: #07140c; /* dark text on a green fill */
   --down: #f0716f;
   --danger: #f0716f;
 

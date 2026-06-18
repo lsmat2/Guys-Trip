@@ -19,7 +19,9 @@ export default function VoteButtons({ upCount, downCount, myVote, onVote }: Prop
         aria-pressed={myVote === 1}
         aria-label="Upvote"
       >
-        ▲ <span className={styles.count}>{upCount}</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/upvote.png" alt="" className={styles.icon} />
+        <span className={styles.count}>{upCount}</span>
       </button>
       <button
         className={`${styles.btn} ${styles.down} ${myVote === -1 ? styles.active : ""}`}
@@ -27,7 +29,9 @@ export default function VoteButtons({ upCount, downCount, myVote, onVote }: Prop
         aria-pressed={myVote === -1}
         aria-label="Downvote"
       >
-        ▼ <span className={styles.count}>{downCount}</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/downvote.png" alt="" className={styles.icon} />
+        <span className={styles.count}>{downCount}</span>
       </button>
     </div>
   );

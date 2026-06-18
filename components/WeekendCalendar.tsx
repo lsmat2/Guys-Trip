@@ -39,10 +39,7 @@ export default function WeekendCalendar({
               ? voters.some((v) => v.id === currentUser.id)
               : false;
             return (
-              <div
-                key={w.start}
-                className={`${styles.row} ${iAmFree ? styles.free : ""}`}
-              >
+              <div key={w.start} className={styles.row}>
                 <span className={styles.label}>{w.label}</span>
                 {voters.length > 0 ? (
                   <span className={styles.names}>
@@ -53,7 +50,7 @@ export default function WeekendCalendar({
                 )}
                 <Button
                   small
-                  variant={iAmFree ? "primary" : "default"}
+                  variant={iAmFree ? "success" : "default"}
                   onClick={() => onToggle(w.start, !iAmFree)}
                 >
                   I&apos;m free

@@ -20,11 +20,6 @@
   margin-bottom: var(--space-2);
 }
 
-.free {
-  border-color: var(--accent);
-  box-shadow: inset 0 0 0 1px var(--accent);
-}
-
 .label {
   font-weight: 600;
   min-width: 96px;

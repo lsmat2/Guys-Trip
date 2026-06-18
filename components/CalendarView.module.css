@@ -60,11 +60,11 @@
   border-color: var(--border-strong);
 }
 
-/* current user is free this weekend */
+/* current user is free this weekend — green = "yes, available" */
 .free {
-  background: var(--accent);
-  color: var(--accent-contrast);
-  border-color: var(--accent);
+  background: var(--up);
+  color: var(--up-contrast);
+  border-color: var(--up);
 }
 
 .count {

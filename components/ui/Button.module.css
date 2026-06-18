@@ -35,6 +35,18 @@
   border-color: var(--accent-hover);
 }
 
+/* affirmative / "yes" state, e.g. marking yourself available */
+.success {
+  background: var(--up);
+  border-color: var(--up);
+  color: var(--up-contrast);
+  font-weight: 600;
+}
+
+.success:hover:not(:disabled) {
+  filter: brightness(1.07);
+}
+
 .danger {
   background: transparent;
   border-color: transparent;

@@ -24,6 +24,14 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* black line-art PNG -> white silhouette on the dark UI */
+.icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
 .up.active {
   border-color: var(--up);
   color: var(--up);
