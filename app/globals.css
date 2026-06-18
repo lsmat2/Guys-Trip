@@ -75,3 +75,13 @@ button {
   margin: 0 auto;
   padding: var(--space-5) var(--space-4) var(--space-8);
 }
+
+/* makes a surface read as interactive (e.g. linked cards) */
+.clickable {
+  cursor: pointer;
+  transition: border-color 0.12s ease;
+}
+
+.clickable:hover {
+  border-color: var(--accent);
+}

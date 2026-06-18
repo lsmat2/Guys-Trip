@@ -10,7 +10,7 @@ export default function Home() {
 
       <Stack gap={12} style={{ marginTop: 24 }}>
         <Link href="/listings" style={{ textDecoration: "none" }}>
-          <Card>
+          <Card className="clickable">
             <strong>Listings</strong>
             <p style={{ margin: "4px 0 0", color: "var(--text-muted)" }}>
               Browse places and upvote / downvote them.
@@ -19,7 +19,7 @@ export default function Home() {
         </Link>
 
         <Link href="/weekends" style={{ textDecoration: "none" }}>
-          <Card>
+          <Card className="clickable">
             <strong>Weekends</strong>
             <p style={{ margin: "4px 0 0", color: "var(--text-muted)" }}>
               Mark which weekends you&apos;re free.
