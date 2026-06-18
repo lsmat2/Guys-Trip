@@ -7,6 +7,10 @@ export type ListingWithVotes = {
   url: string;
   /** resolved display name (the real listing name, not the parsed facts) */
   title: string | null;
+  /** raw scraped title (the "smush" parsed into facts) — for the admin editor */
+  rawTitle: string | null;
+  /** raw scraped description (the real listing name) — for the admin editor */
+  description: string | null;
   imageUrl: string | null;
   /** lead descriptor parsed from the scraped title, e.g. "Home in Cartagena" */
   summary: string | null;

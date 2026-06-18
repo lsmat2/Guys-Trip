@@ -14,6 +14,7 @@ type Props = {
   listing: ListingWithVotes;
   currentUser: CurrentUser | null;
   onVote: (listingId: number, value: 1 | -1) => void;
+  onEdit: (listing: ListingWithVotes) => void;
   onDelete: (listingId: number) => void;
 };
 
@@ -21,6 +22,7 @@ export default function ListingCard({
   listing,
   currentUser,
   onVote,
+  onEdit,
   onDelete,
 }: Props) {
   const myVote: 0 | 1 | -1 = currentUser
@@ -89,9 +91,14 @@ export default function ListingCard({
             onVote={(value) => onVote(listing.id, value)}
           />
           {currentUser?.isAdmin && (
-            <Button small variant="danger" onClick={() => onDelete(listing.id)}>
-              Delete
-            </Button>
+            <>
+              <Button small onClick={() => onEdit(listing)}>
+                Edit
+              </Button>
+              <Button small variant="danger" onClick={() => onDelete(listing.id)}>
+                Delete
+              </Button>
+            </>
           )}
         </div>
       </div>

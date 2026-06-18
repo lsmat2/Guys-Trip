@@ -7,7 +7,7 @@ import Stack from "@/components/ui/Stack";
 import Button from "@/components/ui/Button";
 import Modal from "@/components/ui/Modal";
 import ListingCard from "@/components/ListingCard";
-import AddListingForm from "@/components/AddListingForm";
+import ListingForm from "@/components/ListingForm";
 import { useAuth, type CurrentUser } from "@/lib/auth";
 import { jsonFetcher, userHeaders } from "@/lib/api";
 import type { ListingWithVotes } from "@/lib/types";
@@ -37,6 +37,8 @@ function applyVote(
 export default function ListingsPage() {
   const { currentUser, requireUser } = useAuth();
   const [addOpen, setAddOpen] = useState(false);
+  // the listing currently being edited (admin), or null when the editor is closed
+  const [editing, setEditing] = useState<ListingWithVotes | null>(null);
   const { data, mutate, isLoading } = useSWR<ListingWithVotes[]>(
     "/api/listings",
     jsonFetcher,
@@ -59,6 +61,11 @@ export default function ListingsPage() {
       body: JSON.stringify({ value }),
     });
     mutate(); // revalidate against server truth
+  }
+
+  function handleEdit(listing: ListingWithVotes) {
+    if (!currentUser?.isAdmin) return;
+    setEditing(listing);
   }
 
   async function handleDelete(listingId: number) {
@@ -90,13 +97,31 @@ export default function ListingsPage() {
             onClose={() => setAddOpen(false)}
             title="Add a listing"
           >
-            <AddListingForm
+            <ListingForm
               currentUser={currentUser}
-              onAdded={() => {
+              onSaved={() => {
                 mutate();
                 setAddOpen(false);
               }}
             />
+          </Modal>
+          <Modal
+            open={editing !== null}
+            onClose={() => setEditing(null)}
+            title="Edit listing"
+          >
+            {editing && (
+              // key by id so the form remounts (and re-prefills) per listing
+              <ListingForm
+                key={editing.id}
+                currentUser={currentUser}
+                listing={editing}
+                onSaved={() => {
+                  mutate();
+                  setEditing(null);
+                }}
+              />
+            )}
           </Modal>
         </>
       )}
@@ -116,6 +141,7 @@ export default function ListingsPage() {
               listing={l}
               currentUser={currentUser}
               onVote={handleVote}
+              onEdit={handleEdit}
               onDelete={handleDelete}
             />
           ))}
