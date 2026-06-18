@@ -1,6 +1,23 @@
+/* Sticky, frosted-glass navbar. Three flex zones: brand (left), nav (center,
+   evenly spread), identity (right). Stays in document flow so it reserves its
+   own height — no spacer needed on page content. */
 .header {
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  /* translucent surface so page content blurs through on scroll */
+  background: color-mix(in srgb, var(--surface) 68%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+}
+
+/* Without backdrop blur, transparency would hurt contrast — fall back to a
+   near-opaque surface so text stays readable. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .header {
+    background: color-mix(in srgb, var(--surface) 96%, transparent);
+  }
 }
 
 .inner {
@@ -12,24 +29,36 @@
   gap: var(--space-4);
 }
 
+/* ---- Left: brand ---- */
 .brand {
+  flex: 0 0 auto;
   font-weight: 700;
   font-size: 1.05rem;
+  letter-spacing: -0.01em;
   color: var(--text);
+  white-space: nowrap;
 }
 
 .brand:hover {
   color: var(--text);
 }
 
+/* ---- Center: nav, evenly spread ---- */
 .nav {
+  flex: 1 1 auto;
   display: flex;
-  gap: var(--space-3);
-  margin-left: var(--space-2);
+  justify-content: space-evenly;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 .link {
+  position: relative;
   color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: var(--space-1) 0;
+  transition: color 0.16s ease;
 }
 
 .link:hover {
@@ -37,11 +66,48 @@
   text-decoration: none;
 }
 
+/* Animated underline indicator — subtle on hover, full on the active page. */
+.link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+
+.link:hover::after {
+  transform: scaleX(0.4);
+}
+
 .active {
   color: var(--text);
   font-weight: 600;
 }
 
-.spacer {
-  flex: 1;
+.active::after {
+  transform: scaleX(1);
+}
+
+/* ---- Right: identity ---- */
+.identity {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+/* Tighten gaps on narrow screens so all three zones stay on one line. */
+@media (max-width: 480px) {
+  .inner {
+    gap: var(--space-3);
+    padding: var(--space-3);
+  }
+
+  .brand {
+    font-size: 1rem;
+  }
 }

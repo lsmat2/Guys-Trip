@@ -19,14 +19,18 @@ export default function SiteHeader() {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
+        {/* Left zone — brand links home */}
         <Link href="/" className={styles.brand}>
           Goon Trip
         </Link>
-        <nav className={styles.nav}>
+
+        {/* Center zone — page nav, evenly spread across the flexible middle */}
+        <nav className={styles.nav} aria-label="Primary">
           {NAV.map((item) => (
             <Link
               key={item.href}
               href={item.href}
+              aria-current={pathname === item.href ? "page" : undefined}
               className={`${styles.link} ${
                 pathname === item.href ? styles.active : ""
               }`}
@@ -36,24 +40,25 @@ export default function SiteHeader() {
           ))}
         </nav>
 
-        <div className={styles.spacer} />
-
-        {/* avoid hydration flicker: render identity only once ready */}
-        {ready &&
-          (currentUser ? (
-            <Avatar
-              name={currentUser.name}
-              onClick={openPicker}
-              aria-label="Switch profile"
-              title={`${currentUser.name}${
-                currentUser.isAdmin ? " (admin)" : ""
-              } — switch profile`}
-            />
-          ) : (
-            <Button small variant="primary" onClick={openPicker}>
-              Sign in
-            </Button>
-          ))}
+        {/* Right zone — identity, opens the profile switcher */}
+        <div className={styles.identity}>
+          {/* avoid hydration flicker: render identity only once ready */}
+          {ready &&
+            (currentUser ? (
+              <Avatar
+                name={currentUser.name}
+                onClick={openPicker}
+                aria-label="Switch profile"
+                title={`${currentUser.name}${
+                  currentUser.isAdmin ? " (admin)" : ""
+                } — switch profile`}
+              />
+            ) : (
+              <Button small variant="primary" onClick={openPicker}>
+                Sign in
+              </Button>
+            ))}
+        </div>
       </div>
     </header>
   );
