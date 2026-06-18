@@ -28,11 +28,14 @@
 .arrow {
   font-size: 0.9em;
   color: var(--text-muted);
-  transition: color 0.12s ease;
+  transition: transform 0.12s ease, color 0.12s ease;
 }
 
-.sectionLink:hover .arrow {
+/* nudge the arrow on hover (desktop) and press (:active fires on mobile tap) */
+.sectionLink:hover .arrow,
+.sectionLink:active .arrow {
   color: var(--accent);
+  transform: translate(1px, -1px);
 }
 
 .muted {
