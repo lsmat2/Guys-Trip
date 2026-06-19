@@ -1,5 +1,6 @@
 import Card from "@/components/ui/Card";
 import AvatarStack from "@/components/AvatarStack";
+import ListingImage from "@/components/ListingImage";
 import ListingFacts from "@/components/ListingFacts";
 import type { ListingWithVotes } from "@/lib/types";
 import styles from "./TopListing.module.css";
@@ -19,8 +20,11 @@ export default function TopListing({
   return (
     <Card className={styles.card}>
       {listing.imageUrl && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={listing.imageUrl} alt="" className={styles.thumb} />
+        <ListingImage
+          src={listing.imageUrl}
+          city={listing.city}
+          className={styles.thumb}
+        />
       )}
       <div className={styles.main}>
         <a

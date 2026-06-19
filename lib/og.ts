@@ -17,6 +17,8 @@ export type OgData = {
 export type ListingFacts = {
   /** the lead descriptor, e.g. "Home in Cartagena" */
   summary: string | null;
+  /** city/town pulled from the summary, e.g. "Cartagena" (Airbnb hides region) */
+  city: string | null;
   rating: number | null;
   bedrooms: number | null;
   beds: number | null;
@@ -33,6 +35,7 @@ export type ListingFacts = {
 export function parseListingTitle(title: string | null): ListingFacts {
   const facts: ListingFacts = {
     summary: null,
+    city: null,
     rating: null,
     bedrooms: null,
     beds: null,
@@ -63,6 +66,14 @@ export function parseListingTitle(title: string | null): ListingFacts {
     }
     // first segment that isn't a rating/count is the descriptor
     if (facts.summary === null) facts.summary = seg;
+  }
+
+  // Airbnb summaries read "<type> in <City>" (e.g. "Home in Cartagena"). The
+  // greedy ^.* anchors to the LAST " in " so "Room in home in Cartagena" yields
+  // "Cartagena"; \b avoids matching the "in" inside words like "Cabin".
+  if (facts.summary) {
+    const m = facts.summary.match(/^.*\bin\s+(.+)$/i);
+    if (m) facts.city = m[1].trim() || null;
   }
 
   return facts;

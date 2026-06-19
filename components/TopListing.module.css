@@ -1,31 +1,29 @@
 .card {
+  --lander-card-h: 124px;
   display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3);
+  /* stretch so the square thumb fills the row's full height; the height is
+     FIXED at ~half the listings card so the two read as a clear hierarchy */
+  align-items: stretch;
+  height: var(--lander-card-h);
+  overflow: hidden;
+  /* no padding: the photo bleeds flush to the card edges so it fills the whole
+     height (the card's own radius clips its corners); text gets its own pad */
+  padding: 0;
 }
 
+/* square that fills the row's full height (so the lander photo width is the
+   same on every row); aspect-ratio derives width from the stretched height */
 .thumb {
-  flex: none;
-  width: 88px;
-  height: 88px;
-  border-radius: var(--radius);
-  object-fit: cover;
-  background: var(--bg);
-  border: 1px solid var(--border);
-}
-
-/* larger, more prominent photo on wider screens */
-@media (min-width: 640px) {
-  .thumb {
-    width: 112px;
-    height: 112px;
-  }
+  align-self: stretch;
+  aspect-ratio: 1 / 1;
 }
 
 .main {
   flex: 1;
   min-width: 0;
+  padding: var(--space-3);
+  /* clip rather than overflow the fixed-height row */
+  overflow: hidden;
 }
 
 .title {

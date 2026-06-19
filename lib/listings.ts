@@ -24,6 +24,7 @@ export function toClientListing(r: ListingRow, up: Voter[], down: Voter[]) {
     description: r.description,
     imageUrl: r.imageUrl,
     summary: facts.summary,
+    city: facts.city,
     rating: facts.rating,
     bedrooms: facts.bedrooms,
     beds: facts.beds,

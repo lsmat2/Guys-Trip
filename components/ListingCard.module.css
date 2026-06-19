@@ -1,27 +1,25 @@
-/* Media-object card. Wide screens: photo panel on the left, content on the
-   right. Phones: the photo becomes a full-width 3:2 hero stacked above the
-   content (no squished crop), and the content is centered. */
+/* Media-object card: a FIXED-SIZE square photo on the left (constant width on
+   every card) and content on the right. The card is at least as tall as the
+   photo and grows with content up to a cap (--listing-card-max); past the cap
+   the middle region clips. A tall card shows card surface below the photo.
+   Tune via --listing-photo / --listing-card-max. */
 .card {
+  --listing-photo: 208px;
+  --listing-card-max: 300px;
+  min-height: var(--listing-photo);
+  max-height: var(--listing-card-max);
   padding: 0;
   overflow: hidden;
   display: flex;
   align-items: stretch;
 }
 
-.media {
-  flex: 0 0 auto;
-  width: clamp(116px, 32%, 224px);
-  min-height: 172px;
-  align-self: stretch;
-  background: var(--bg);
-  overflow: hidden;
-}
-
-.image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* Fixed square, pinned to the top so it lines up with the title; never stretches
+   with the card height, which keeps its width identical across all cards. */
+.photo {
+  width: var(--listing-photo);
+  height: var(--listing-photo);
+  align-self: flex-start;
 }
 
 .body {
@@ -30,18 +28,35 @@
   padding: var(--space-4);
   display: flex;
   flex-direction: column;
+  gap: var(--space-2);
   /* center via text-align, NOT align-items: center — the latter shrink-wraps
      each child to max-content, which stops the title/desc from wrapping. */
   text-align: center;
+}
+
+/* Takes the slack between the pinned facts and footer; the ONLY thing that
+   clips once the card hits its max height (min-height:0 lets it shrink). */
+.middle {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-2);
 }
 
 .title {
+  flex: none;
   font-weight: 600;
   font-size: 1.05rem;
   letter-spacing: -0.01em;
   color: var(--text);
   word-break: break-word;
+  /* cap to 2 lines so a long name can't eat the whole content region */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* no hover effects — keep the title color stable (overrides global a:hover) */
@@ -61,6 +76,7 @@
 
 /* center the facts row to match this card's centered body */
 .facts {
+  flex: none;
   justify-content: center;
 }
 
@@ -75,8 +91,7 @@
   justify-content: center;
   gap: var(--space-3);
   flex-wrap: wrap;
-  margin-top: auto;
-  padding-top: var(--space-2);
+  flex: none;
 }
 
 .voters {
@@ -99,18 +114,4 @@
   height: 15px;
   object-fit: contain;
   filter: brightness(0) invert(1);
-}
-
-/* Phones: stack vertically — full-width 3:2 hero photo above centered content. */
-@media (max-width: 640px) {
-  .card {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .media {
-    width: 100%;
-    min-height: 0;
-    aspect-ratio: 3 / 2;
-  }
 }

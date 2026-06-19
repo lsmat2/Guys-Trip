@@ -2,6 +2,7 @@
 
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import ListingImage from "@/components/ListingImage";
 import VoteButtons from "@/components/VoteButtons";
 import UserBadges from "@/components/UserBadges";
 import ListingFacts from "@/components/ListingFacts";
@@ -38,13 +39,14 @@ export default function ListingCard({
   return (
     <Card className={styles.card}>
       {listing.imageUrl && (
-        <div className={styles.media}>
-          {/* arbitrary external image hosts → plain <img> (no next/image domain config) */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={listing.imageUrl} alt="" className={styles.image} />
-        </div>
+        <ListingImage
+          src={listing.imageUrl}
+          city={listing.city}
+          className={styles.photo}
+        />
       )}
       <div className={styles.body}>
+        {/* Title + facts are pinned (never clip). They sit above the middle. */}
         <a
           href={listing.url}
           target="_blank"
@@ -62,26 +64,31 @@ export default function ListingCard({
           baths={listing.baths}
           pricePerNight={listing.pricePerNight}
         />
-        <ListingNotes notes={listing.importantNotes} className={styles.notes} />
 
-        {hasVoters && (
-          <div className={styles.voters}>
-            {listing.upVoters.length > 0 && (
-              <span className={styles.voterGroup}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/upvote.png" alt="up" className={styles.voterIcon} />
-                <UserBadges voters={listing.upVoters} />
-              </span>
-            )}
-            {listing.downVoters.length > 0 && (
-              <span className={styles.voterGroup}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/downvote.png" alt="down" className={styles.voterIcon} />
-                <UserBadges voters={listing.downVoters} />
-              </span>
-            )}
-          </div>
-        )}
+        {/* Notes + voters take the slack and are the ONLY thing that clips once
+            the card hits its max height — so actions below are never lost. */}
+        <div className={styles.middle}>
+          <ListingNotes notes={listing.importantNotes} className={styles.notes} />
+
+          {hasVoters && (
+            <div className={styles.voters}>
+              {listing.upVoters.length > 0 && (
+                <span className={styles.voterGroup}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/upvote.png" alt="up" className={styles.voterIcon} />
+                  <UserBadges voters={listing.upVoters} />
+                </span>
+              )}
+              {listing.downVoters.length > 0 && (
+                <span className={styles.voterGroup}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/downvote.png" alt="down" className={styles.voterIcon} />
+                  <UserBadges voters={listing.downVoters} />
+                </span>
+              )}
+            </div>
+          )}
+        </div>
 
         <div className={styles.footer}>
           <VoteButtons

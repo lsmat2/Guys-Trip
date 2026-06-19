@@ -14,6 +14,8 @@ export type ListingWithVotes = {
   imageUrl: string | null;
   /** lead descriptor parsed from the scraped title, e.g. "Home in Cartagena" */
   summary: string | null;
+  /** city/town parsed from the summary, e.g. "Cartagena"; null if unknown */
+  city: string | null;
   rating: number | null;
   bedrooms: number | null;
   beds: number | null;
